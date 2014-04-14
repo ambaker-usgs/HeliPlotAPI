@@ -6,6 +6,5 @@ Splits HeliPlot program into separate class files to be used as an API-similar p
 Class Files
 ============
 
-  1) ParallelCwbQuery
-  2) PullTraces
-  3) 
+    1) parallelcwbQuery() - creates a pool of CWBQuery workers 
+    2) pullTraces() - 
