@@ -6,7 +6,7 @@ Splits HeliPlot program into separate class files to be used as an API-similar p
 Class Files
 ============
 
-    1) ___init__.py_  - initializes the HeliPlot package (class files can be imported)
+    1) __init__.py - initializes the HeliPlot package (class files can be imported)
     2) parallelcwbQuery.py - launches pool of CWBQuery() workers to pull station data
     3) pullTraces.py - pull trace stats from station data stream (removes traces with sr=0Hz)
     4) freqResponse.py - pull frequency response for station
