@@ -6,18 +6,11 @@ Splits HeliPlot program into separate class files to be used as an API-similar p
 Class Files
 ============
 
-1. _'__init__'.py_ - initializes the HeliPlot package (class files can be imported)
-2. parallelcwbQuery.py
- * Launches pool of CWBQuery() workers to pull station data
-3. pullTraces.py
- * Pull trace stats from station data stream (removes traces with sr=0Hz)
-4. freqResponse.py
- * Pull frequency response for station
-5. parallelfreqDeconvFilter.py
- * Launches pool of workers that deconvolves/filters data
-6. magnifyData.py
- * Magnify streams by specified magnification factor
-7. parallelPlotVelocity.py
- * Launch pool of workers to plot filtered/magnified station data
-8. createThumbnails.py
- * Create thumbnail images from full sized station plots
+1. _init.py_ - initializes the HeliPlot package (class files can be imported)
+2. _parallelcwbQuery.py_ - launches pool of CWBQuery() workers to pull station data
+3. _pullTraces.py_ - pull trace stats from station data stream (removes traces with sr=0Hz)
+4. _freqResponse.py_ - pull frequency response for station
+5. _parallelfreqDeconvFilter.py_ - launches pool of workers that deconvolves/filters data
+6. _magnifyData.py_ - magnify streams by specified magnification factor
+7. _parallelPlotVelocity.py_ - launch pool of workers to plot filtered/magnified station data
+8. _createThumbnails.py_ - create thumbnail images from full sized station plots
