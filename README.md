@@ -13,11 +13,11 @@ Class Files
     3) pullTraces.py - pull trace stats from station data stream (removes traces with sr=0Hz)
     
     4) freqResponse.py - pull frequency response for station
-    5) parallelfreqDeconvFilter.py
-        Launches pool of workers that deconvolves/filters data
-    6) magnifyData.py
-        Magnify streams by specified magnification factor
-    7) parallelPlotVelocity.py
-        Launch pool of workers to plot filtered/magnified station data
-    8) createThumbnails.py
-        Create thumbnail images from full sized station plots
+    
+    5) parallelfreqDeconvFilter.py - launches pool of workers that deconvolves/filters data
+    
+    6) magnifyData.py - magnify streams by specified magnification factor
+    
+    7 parallelPlotVelocity.py - launch pool of workers to plot filtered/magnified station data
+    
+    8) createThumbnails.py - create thumbnail images from full sized station plots
