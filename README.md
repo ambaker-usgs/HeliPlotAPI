@@ -14,3 +14,10 @@ Class Files
 6. _magnifyData.py_ - magnify streams by specified magnification factor
 7. _parallelPlotVelocity.py_ - launch pool of workers to plot filtered/magnified station data
 8. _createThumbnails.py_ - create thumbnail images from full sized station plots
+
+Build Files/Install
+===================
+
+1. _setup.py_ - packages HeliPlot class files using python build structure
+2. _python_ _setup.py_ _sdist_ - hard links programs to distribution directory and creates tarball
+3. _python_ _setup.py_ _install_ - install HeliPlot package to python site-packages
