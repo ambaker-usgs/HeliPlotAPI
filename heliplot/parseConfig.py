@@ -11,9 +11,9 @@
 #	   {year, month, day, hour, minute, second, microsecond} 
 # ----------------------------------------------------------------
 # Methods/Functions: 
-#	   is_empty - check if list/dict is empty
-#	   setStationData - sets vars from station.cfg
-#	   setExecTime - sets execution time for station queries
+#	   is_empty() - check if list/dict is empty
+#	   setStationData() - sets vars from station.cfg
+#	   setExecTime() - sets execution time for station queries
 # ----------------------------------------------------------------
 import os, re
 from datetime import datetime, timedelta
@@ -26,7 +26,7 @@ def is_empty(structure):
 	else:
 		return True
 
-class ParseFile(object):
+class ParseConfig(object):
 	# Read in main station config file (station.cfg)
 	def __init__(self, **kwargs):
 		os.chdir('/home/asluser/HeliPlot/')

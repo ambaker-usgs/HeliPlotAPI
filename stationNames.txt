@@ -1,0 +1,36 @@
+CU ANWB Willy Bob, Antigua and Barbuda
+CU BBGH Gun Hill, Barbados
+CU GRGR Grenville, Grenada
+CU GRTK Grand Turk, Turks and Caicos Islands
+IC LSA Tibet, China
+IC MDJ Mudanjiang, Heilongjiang Province, China
+IC QIZ Qiongzhong, Hainan Province, China
+II TAU Hobart, Tasmania, Australia
+II TLY Talaya, Russia
+II WRAB Tennant Creek, NT, Australia
+IM NV31 Mina Array Site 31, Nevada, USA
+IM PD31 Pinedale Array Site 31, Wyoming, USA
+IM TX31 Lajitas Array Sites 11 and 31, Wyoming, USA
+IU ADK Adak, Aleutian Islands, Alaska
+IU AFI Afiamalu, Samoa
+IU ANMO Albuquerque, New Mexico, USA
+IU ANTO Ankara, Turkey
+IU BBSR Bermuda Institute of Ocean Sciences, St George's Bermuda
+IU BILL Bilibino, Russia
+IU CASY Casey, Antarctica
+IU CCM Cathedral Cave, Missouri, USA
+IU CHTO Chiang Mai, Thailand
+IU COLA College Outpost, Alaska, USA
+IU GRFO Grafenberg, Germany
+IU KBL Kabul, Afghanistan
+IU KOWA Kowa, Mali
+IU LCO Las Campanas Astronomical Observatory, Chile
+CU GRGR Grenville, Grenada
+CU TGUH Tegucigalpa, Honduras
+CU GRTK Grand Turk, Turks and Caicos Islands
+IU FURI Mt. Furi, Ethiopia
+US AHID Auburn Hatchery, Idaho, USA
+US AMTX Amarillo, Texas, USA
+US BINY Binghamton, New York, USA
+US LTX Lajitas, Texas, USA
+US MCWV Mont Chateau, West Virginia, USA

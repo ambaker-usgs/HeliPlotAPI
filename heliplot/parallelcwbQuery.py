@@ -9,15 +9,15 @@
 #	   seed files from specified server (Golden/ASL)
 # -----------------------------------------------------------
 # Methods:
-#	   launchWorkers - launches pool of cwbQuery workers
-#	   cwbQuery - queries stations from station.cfg
+#	   launchWorkers() - launches pool of cwbQuery workers
+#	   cwbQuery() - queries stations from station.cfg
 # -----------------------------------------------------------
 import multiprocessing
 from multiprocessing import Manager, Value
 import os, sys, string, subprocess
 import time, signal, glob
 
-from kill import KillProc
+from kill import Kill 
 
 # Global vars from HeliPlot.py
 '''
@@ -40,7 +40,7 @@ class TimeoutExpiredError(Exception): pass
 def unwrap_self_cwbQuery(args, **kwargs):
 	return ParallelQuery.cwbQuery(*args, **kwargs)
 
-class ParallelQuery(object):
+class ParallelCwbQuery(object):
 	def __init__(self):
 		# Initialize kill object for class
 		self.killproc = KillProc()

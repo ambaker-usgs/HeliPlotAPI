@@ -8,14 +8,15 @@
 #	   pool. These methods use parent/child/grandchild
 #	   pids to search and destroy hanging processes
 # -----------------------------------------------------------
-# Methods: killSubprocess - kills system subprocess child
-#	   killPool - kills pool of method workers
+# Methods: 
+#	   killSubprocess() - kills system subprocess child
+#	   killPool() - kills pool of method workers
 # -----------------------------------------------------------
 import psutil
 import signal
 import os, time
 
-class KillProc(object):
+class Kill(object):
 	def killSubprocess(self, childpid, gchildpid, signum):
 		# ---------------------------------------
 		# Kills pool subprocess child/grandchild
