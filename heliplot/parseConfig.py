@@ -10,7 +10,9 @@
 #	   option of setting their own time: 
 #	   {year, month, day, hour, minute, second, microsecond} 
 # ----------------------------------------------------------------
-# Methods: setStationData - sets vars from station.cfg
+# Methods/Functions: 
+#	   is_empty - check if list/dict is empty
+#	   setStationData - sets vars from station.cfg
 #	   setExecTime - sets execution time for station queries
 # ----------------------------------------------------------------
 import os, re
@@ -20,17 +22,16 @@ from obspy.core.utcdatetime import UTCDateTime
 # Check if list/dictionary is empty
 def is_empty(structure):
 	if structure:
-		print 'Structure is NOT empty.'
 		return False
 	else:
-		print 'Structure IS empty.'
 		return True
 
-class ParseConfig(object):
+class ParseFile(object):
 	# Read in main station config file (station.cfg)
 	def __init__(self, **kwargs):
 		os.chdir('/home/asluser/HeliPlot/')
 		fin = open('station.cfg', 'r')
+		self.home = os.getcwd()	
 		self.data = {}
 		self.data['station'] = []	# list for multiple stations
 		STFLAG = False
@@ -121,7 +122,6 @@ class ParseConfig(object):
 			tmpexc = re.split(':', tmpmag[i])
 			self.magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
 
-
 	# Get/set current date/time and subtract a day
 	# this will always pull the current time on the system
 	def setExecTime(self, **kwargs): 	
@@ -137,7 +137,6 @@ class ParseConfig(object):
 			min = kwargs['minute']
 			sec = kwargs['second']
 			ms = kwargs['microsecond']
-			print "%s/%s/%s %s:%s:%s:%s" % (yr,mn,dy,hr,min,sec,ms)
 			self.time = datetime(yr, mn, dy, hr, min, sec, ms) - timedelta(days=1)	
 		time2 = self.time + timedelta(hours=1)
 		time2str = time2.strftime("%Y%m%d_%H:00:00")
@@ -146,7 +145,7 @@ class ParseConfig(object):
 		self.datetimePlotstart = UTCDateTime(time2str)
 		self.datetimePlotend = UTCDateTime(time3str)
 		print "datetimePlotstart:	%s" % str(self.datetimePlotstart)
-		print "datetimePlotend: %s" % str(self.datetimePlotend)
+		print "datetimePlotend: 	%s" % str(self.datetimePlotend)
 		timestring = str(self.time)
 		timestring = re.split("\\.", timestring)
 		tmp = timestring[0]
@@ -157,9 +156,9 @@ class ParseConfig(object):
 		tmpquery = re.split(' ', self.datetimeQuery)
 		tmpdate = tmp[0].strip()
 		tmptime = tmp[1].strip()
-		print "\ndatetimeQuery: %s" % str(self.datetimeQuery)
+		print "datetimeQuery: 		%s" % str(self.datetimeQuery)
 		tmpUTC = datetimeQuery
 		tmpUTC = tmpUTC.replace("/", "")
 		tmpUTC = tmpUTC.replace(" ", "_")
 		self.datetimeUTC = UTCDateTime(str(tmpUTC))
-		print "datetimeUTC:	%s" % str(self.datetimeUTC) + "\n"
+		print "datetimeUTC:		%s" % str(self.datetimeUTC) + "\n"
