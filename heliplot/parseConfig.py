@@ -29,12 +29,12 @@ def is_empty(structure):
 class ParseConfig(object):
 	# Read in main station config file (station.cfg)
 	def __init__(self, **kwargs):
-		os.chdir('/home/asluser/HeliPlot/')
-		fin = open('station.cfg', 'r')
+		os.chdir('/home/asluser/HeliPlotAPI')
 		self.home = os.getcwd()	
 		self.data = {}
 		self.data['station'] = []	# list for multiple stations
 		STFLAG = False
+		fin = open('station.cfg', 'r')
 		for line in fin:
 			if line[0] == '#':
 				if line != '\n':
@@ -104,6 +104,7 @@ class ParseConfig(object):
 						self.VHZlpfreq = float(newline[0].strip())	
 					elif "magnification exceptions" in newline[1]:
 						self.magnificationexc = newline[0].strip()
+		fin.close()	# close station.cfg
 
 	# Set station info/locations/metadata 
 	def setStationData(self):

@@ -13,6 +13,8 @@
 #	* storeStations() - store stations/locations in lists
 #	* writeDefaultVariables() - write defaults to station.cfg
 #	* writePaths() - write paths to station.cfg
+#	* writeFilterVariables() - write filters to station.cfg
+#	* writeStations() - write station list to station.cfg
 # ----------------------------------------------------------------
 import os, re, string
 
@@ -21,7 +23,7 @@ class ReadPrestation(object):
 		# ---------------------------------
 		# Open and read list of stations
 		# ---------------------------------
-		os.chdir('/home/asluser/HeliPlotAPI')	
+		os.chdir('/home/asluser/HeliPlotAPI/')	
 		self.stations = []	# list of stations
 		self.stationlist = []	# list for edited station names
 		self.locations = []	# list of locations for each station
@@ -41,6 +43,7 @@ class ReadPrestation(object):
 						self.locations.append(location)
 					elif count > 2:
 						break
+		fin.close()	# close stationNames.txt
 
 	def storeStations(self):
 		# --------------------
@@ -78,7 +81,7 @@ class ReadPrestation(object):
 		# Server variables can change
 		# ---------------------------
 		print "writeDefaultVariables()"	
-		self.cfgout = open('station.cfg', 'w')
+		self.cfgout = open('station.cfg', 'w')	# closed in writeStations()
 		cfgout = self.cfgout
 		cfgout.write(self.cfgcmt)
 		cfgout.write("\n")
@@ -122,6 +125,43 @@ class ReadPrestation(object):
 		cfgout.write(self.helihtmlpath + "\t" + self.helihtmlpathcmt + "\n")	
 		cfgout.write(self.cwbquery + "\t" + self.cwbquerycmt + "\n")
 		cfgout.write(self.resppath + "\t" + self.resppathcmt + "\n\n")
+
+	def writeFilterVariables(self):
+		print "writeFilterVariables()"	
+		cfgout = self.cfgout
+		cfgout.write("# Filter Designs (unique to channelID)\n")
+		cfgout.write("# *NOTE: Filter frequencies will change depending\n")
+		cfgout.write("# on the channel being used (i.e. higher/lower freq channels)\n")
+
+		# EHZ Filter Design
+		cfgout.write(self.EHZfiltertype + "\t" + self.EHZfiltertypecmt + "\n")
+		cfgout.write(self.EHZhpfreq + "\t" + self.EHZhpfreqcmt + "\n")
+		cfgout.write(self.EHZnotchfreq + "\t" + self.EHZnotchfreqcmt + "\n\n")
+
+		# BHZ Filter Design
+		cfgout.write(self.BHZfiltertype + "\t" + self.BHZfiltertypecmt + "\n")
+		cfgout.write(self.BHZbplowerfreq + "\t" + self.BHZbplowerfreqcmt + "\n")
+		cfgout.write(self.BHZbpupperfreq + "\t" + self.BHZbpupperfreqcmt + "\n\n")
+
+		# LHZ Filter Design
+		cfgout.write(self.LHZfiltertype + "\t" + self.LHZfiltertypecmt + "\n")
+		cfgout.write(self.LHZbplowerfreq + "\t" + self.LHZbplowerfreqcmt + "\n")
+		cfgout.write(self.LHZbpupperfreq + "\t" + self.LHZbpupperfreqcmt + "\n\n")
+
+		# VHZ Filter Design
+		cfgout.write(self.VHZfiltertype + "\t" + self.VHZfiltertypecmt + "\n")
+		cfgout.write(self.VHZlpfreq + "\t" + self.VHZlpfreqcmt + "\n\n")
+
+		# Write magnification exception list for specific stations
+		cfgout.write(str(self.magnificationexc) + "\t" + self.magnificationexccmt + "\n\n")
+
+	def writeStations(self):
+		print "writeStations()"
+		cfgout = self.cfgout
+		cfgout.write(self.stationcmt + "\n")
+		for i in range(len(self.stationlist)):
+			cfgout.write(self.stationlist[i] + "\n")
+		self.cfgout.close()	# close station.cfg
 
 	def readConfig(self):
 		# ---------------------------------------------
@@ -214,6 +254,7 @@ class ReadPrestation(object):
 						self.locationexc = newline[1].strip()
 					elif "magnificationexc" in newline[0]:
 						self.magnificationexc = newline[1].strip()
+		fin.close()	# close prestation.cfg
 
 		# Split/store exception channels, locations, magnifications
 		tmpchan = re.split(',', self.channelexc)	# split/store channelexc
@@ -259,7 +300,7 @@ class ReadPrestation(object):
 
 		# Directory paths
 		self.seedpathcmt = "# temporary seed path"
-		self.plotspathcmt = "# temporary seed path"
+		self.plotspathcmt = "# temporary plots path"
 		self.thumbpathcmt = "# temporary thumbnails path"
 		self.helihtmlpathcmt = "# temporary heli html path"
 		self.cwbquerycmt = "# cwbquery jar file"

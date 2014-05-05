@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # This is a test script for HeliPlot module
-from heliplot import kill, readPrestation, parseConfig, parallelcwbQuery
+from heliplot import kill, readPrestation, parseConfig, parallelcwbQuery, pullTraces
 
 # Populate station.cfg using prestation.cfg and stationNames.txt
 # Set user paths and station info
@@ -9,8 +9,10 @@ readcfg = readPrestation.ReadPrestation()
 readcfg.readConfig()
 readcfg.storeStations()
 readcfg.writeDefaultVariables()
+readcfg.writePaths()
+readcfg.writeFilterVariables()
+readcfg.writeStations()
 
-'''
 # Parse station.cfg and set execution time
 pars = parseConfig.ParseConfig()	# initialize parser object
 pars.setStationData()
@@ -26,4 +28,8 @@ queryargs = {'stationinfo': pars.stationinfo, 'cwbquery': pars.cwbquery,
 		'cwbtimeout': pars.cwbtimeout, 'datetimeQuery': pars.datetimeQuery,
 		'duration': pars.duration, 'seedpath': pars.seedpath, 'ipaddress': pars.ipaddress}
 query.launchWorkers(**queryargs)
-'''
+
+# Pull traces from cwbQuery and analyze
+strm = pullTraces.PullTraces()
+strm.analyzeRemove(pars.seedpath)
+

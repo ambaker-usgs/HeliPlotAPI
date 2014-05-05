@@ -19,31 +19,18 @@ import time, signal, glob
 
 from kill import Kill 
 
-# Global vars from HeliPlot.py
-'''
-self.cwbquery
-self.cwbattempts
-self.cwbsleep
-self.cwbtimeout
-self.datetimeQuery
-self.duration
-self.seedpath
-self.ipaddress
-self.stationinfo
-'''
-
 # Exception classes 
 class KeyboardInterruptError(Exception): pass	
 class TimeoutExpiredError(Exception): pass	
 
 # Unpack self from parallel method args and call cwbQuery()
 def unwrap_self_cwbQuery(args, **kwargs):
-	return ParallelQuery.cwbQuery(*args, **kwargs)
+	return ParallelCwbQuery.cwbQuery(*args, **kwargs)
 
 class ParallelCwbQuery(object):
 	def __init__(self):
 		# Initialize kill object for class
-		self.killproc = KillProc()
+		self.killproc = Kill()
 	
 	def cwbQuery(self, station):
 		# ------------------------------------------------
@@ -61,7 +48,7 @@ class ParallelCwbQuery(object):
 					stdout=subprocess.PIPE, stderr=subprocess.PIPE,
 					preexec_fn=os.setsid, shell=True)
 				(out, err) = subproc.communicate(timeout=self.cwbtimeout) # waits
-				time.sleep(3)
+				#time.sleep(3)
 
 				# Set pids and kill args for killSubprocess() method 
 				self.parentpid = os.getppid()
