@@ -32,4 +32,3 @@ query.launchWorkers(**queryargs)
 # Pull traces from cwbQuery and analyze
 strm = pullTraces.PullTraces()
 strm.analyzeRemove(pars.seedpath)
-

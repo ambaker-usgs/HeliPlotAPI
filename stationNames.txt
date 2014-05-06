@@ -5,6 +5,10 @@ CU GRTK Grand Turk, Turks and Caicos Islands
 IC LSA Tibet, China
 IC MDJ Mudanjiang, Heilongjiang Province, China
 IC QIZ Qiongzhong, Hainan Province, China
+II COCO West Island, Cocos (Keeling) Islands
+II HOPE Hope Point, South Georgia Island
+II MSVF Monasavu, Fiji
+II PFO Pinon Flat, California, USA
 II TAU Hobart, Tasmania, Australia
 II TLY Talaya, Russia
 II WRAB Tennant Creek, NT, Australia
@@ -25,6 +29,7 @@ IU GRFO Grafenberg, Germany
 IU KBL Kabul, Afghanistan
 IU KOWA Kowa, Mali
 IU LCO Las Campanas Astronomical Observatory, Chile
+IU MACI Morro de la Arena, Canary Islands
 CU GRGR Grenville, Grenada
 CU TGUH Tegucigalpa, Honduras
 CU GRTK Grand Turk, Turks and Caicos Islands

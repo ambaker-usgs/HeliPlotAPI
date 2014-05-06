@@ -31,31 +31,41 @@ class PullTraces(object):
 				sys.exit(0)
 				print "Method analyzeRemove() is terminated!"
 			i = i - 1
-
-		# Loop through stream traces, if trace has sample rate 0.0Hz
-		# => NFFT = 0, then this trace will be removed 
+	
+		# Remove traces with sample rate = 0.0Hz => NFFT = 0 
 		try:
-			streamlen = len(stream)	# number of streams (ie mseed files)
-			self.streamlen = streamlen
-			print "streamlen: " + str(self.streamlen)
-			print "Removing traces with 0.0Hz sampling rate from stream...\n"
-			trace = {}	# dict of traces for each stream
+			print "Removing traces with 0.0Hz sampling rate from stream..."
+			streamlen = len(stream)	# number of streams (ie stream files)
+			RM = False	
+			print "streamlen = %s\n" % str(streamlen)	
 			for i in range(streamlen):
-				strsel = stream[i]	# selected stream
-				tracelen = strsel.count()
-				tmp_trace_id = strsel[0].getId()
-				index = str(i)
-				if tracelen == 1:	# single trace stream
-					#trace[index] = strsel[0]	# trace 0 in stream[i]
-					tr = stream[i][0]	
+				tracelen = stream[i].count()	# number of traces in stream
+				id = stream[i][0].getId()	# trace ID	
+				if tracelen == 1:
+					tr = stream[i][0]	# tmp trace
 					if tr.stats['sampling_rate'] == 0.0:
 						stream[i].remove(tr)
-				elif tracelen > 1:	# multiple trace stream
-					#trace[index] = []	# list in dict
-					for j in range(tracelen):
-						#trace[index].append(strsel[j])	
-							
-
+				elif tracelen > 1:
+					j = 0	# stream will change sizes when trace is removed
+					while j < range(stream[i].count()):
+						if j == stream[i].count():	
+							break	# index = num traces b
+						tr = stream[i][j]	# tmp trace
+						if tr.stats['sampling_rate'] == 0.0:
+							if not RM:	
+								print "Removing empty traces:"	
+								print stream[i]
+								print	
+								RM = True 
+							stream[i].remove(tr)	# rm empty trace
+							j = 0	# reset index for new size
+						else:
+							j = j + 1	
+					if RM:
+						print "Final stream with removed traces:"
+						print stream[i]
+						RM = False
+			self.stream = stream	# new stream with removed traces	
 		except KeyboardInterrupt:
 			print "KeyboardInterrupt pullTraces(): terminating analyzeRemove() method"
 			sys.exit(0)
