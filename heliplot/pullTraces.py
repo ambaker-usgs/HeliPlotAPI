@@ -17,6 +17,7 @@ from obspy.core.stream import read
 class PullTraces(object):
 	# Read MSEED files from query and analyze
 	def analyzeRemove(self, seedpath):
+		print "------pullTraces() Start------\n"	
 		os.chdir(seedpath)
 		filelist = sorted(os.listdir(seedpath), key=os.path.getctime)
 		self.filelist = filelist
@@ -36,6 +37,7 @@ class PullTraces(object):
 		try:
 			print "Removing traces with 0.0Hz sampling rate from stream..."
 			streamlen = len(stream)	# number of streams (ie stream files)
+			self.streamlen = streamlen	
 			RM = False	
 			print "streamlen = %s\n" % str(streamlen)	
 			for i in range(streamlen):
@@ -64,14 +66,15 @@ class PullTraces(object):
 					if RM:
 						print "Final stream with removed traces:"
 						print stream[i]
+						print	
 						RM = False
 			self.stream = stream	# new stream with removed traces	
+			print "-------pullTraces() Complete-------\n\n"	
 		except KeyboardInterrupt:
 			print "KeyboardInterrupt pullTraces(): terminating analyzeRemove() method"
 			sys.exit(0)
 			print "Method pullTraces() is terminated!"
 		except Exception as e:
-			#print "Exception pullTraces(): " + str(e)
-			print e	
+			print "Exception pullTraces(): " + str(e)
 			sys.exit(0)
 			print "Method pullTraces() is terminated!"

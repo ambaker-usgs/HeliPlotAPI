@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 # This is a test script for HeliPlot module
-from heliplot import kill, readPrestation, parseConfig, parallelcwbQuery, pullTraces
+from heliplot import kill, readPrestation, parseConfig,\
+			parallelcwbQuery, pullTraces, freqResponse
 
 # Populate station.cfg using prestation.cfg and stationNames.txt
 # Set user paths and station info
@@ -31,4 +32,11 @@ query.launchWorkers(**queryargs)
 
 # Pull traces from cwbQuery and analyze
 strm = pullTraces.PullTraces()
-strm.analyzeRemove(pars.seedpath)
+seedpath = pars.seedpath
+strm.analyzeRemove(seedpath)
+
+# Pull freq responses from queried station sand store
+resp = freqResponse.FreqResponse()
+respargs = {'resppath': pars.resppath, 'filelist': strm.filelist,
+		'streamlen': strm.streamlen, 'datetimeUTC': pars.datetimeUTC} 
+resp.storeResps(**respargs)
