@@ -21,4 +21,4 @@ Build Files/Install
 1. _setup.py_ - packages HeliPlot class files using python build structure
 2. _python_ _setup.py_ _sdist_ - hard links programs to distribution directory and creates tarball
 3. _python_ _setup.py_ _install_ - installs HeliPlot package to python site-packages
-4. _testHeliPlot.py_ - test program for HeliPlot classes (./testHeliPlot.py to run)
+4. _testHeliPlot.py_ - test program for HeliPlot classes (./_testHeliPlot.py_ to run)
