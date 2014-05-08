@@ -7,13 +7,14 @@ Class Files
 ============
 
 1. _init.py_ - initializes the HeliPlot package (class files can be imported)
-2. _parallelcwbQuery.py_ - launches pool of CWBQuery() workers to pull station data
-3. _pullTraces.py_ - pull trace stats from station data stream (removes traces with sr=0Hz)
-4. _freqResponse.py_ - pull frequency response for station
-5. _parallelfreqDeconvFilter.py_ - launches pool of workers that deconvolves/filters data
-6. _magnifyData.py_ - magnify streams by specified magnification factor
-7. _parallelPlotVelocity.py_ - launch pool of workers to plot filtered/magnified station data
-8. _createThumbnails.py_ - create thumbnail images from full sized station plots
+2. _kill.py_ - kills subprocess and multiprocessing pools for cwbquery and filtering
+3. _interrupt.py_ - raises timeout and keyboard interrupts for try/catch blocks 
+4. _readPrestation.py_ - reads prestation.cfg and creates main station.cfg file
+5. _parseConfig.py_ - parses main station.cfg file and globalizes variables
+6. _parallelcwbQuery.py_ - launches pool of CWBQuery() workers to pull station data
+7. _pullTraces.py_ - pull trace stats from station data stream (removes traces with sr=0Hz)
+8. _freqResponse.py_ - pull frequency response for station
+9. _paralleldeconvFilter.py_ - launches pool of workers that deconvolves/filters data 
 
 Build Files/Install
 ===================
