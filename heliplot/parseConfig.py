@@ -127,6 +127,8 @@ class ParseConfig(object):
 						self.pix = int(newline[0].strip())
 					elif "image format" in newline[1]:
 						self.imgformat = str(newline[0].strip())
+					elif "thumbscale" in newline[1]:
+						self.thumbscale = float(newline[0].strip())
 					elif "vertical" in newline[1]:
 						self.vertrange = float(newline[0].strip())
 					elif "cwbquery timeout" in newline[1]:

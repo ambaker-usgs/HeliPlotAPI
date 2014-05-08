@@ -94,6 +94,7 @@ class ReadPrestation(object):
 		cfgout.write(self.resy + "\t" + self.resycmt + "\n")
 		cfgout.write(self.pix + "\t" + self.pixcmt + "\n")
 		cfgout.write(self.imgformat + "\t" + self.imgformatcmt + "\n")
+		cfgout.write(self.thumbscale + "\t" + self.thumbscalecmt + "\n")	
 		cfgout.write(self.vertrange + "\t" + self.vertrangecmt + "\n")
 		cfgout.write(self.cwbwait + "\t" + self.cwbwaitcmt + "\n")
 		cfgout.write(self.cwbattempts + "\t" + self.cwbattemptscmt + "\n")
@@ -195,6 +196,8 @@ class ReadPrestation(object):
 						self.pix = newline[1].strip()
 					elif "imgformat" in newline[0]:
 						self.imgformat = newline[1].strip()
+					elif "thumbscale" in newline[0]:
+						self.thumbscale = newline[1].strip()
 					elif "vertrange" in newline[0]:
 						self.vertrange = newline[1].strip()
 					elif "cwbwait" in newline[0]:
@@ -293,6 +296,7 @@ class ReadPrestation(object):
 		self.resycmt = "# yresolution"
 		self.pixcmt = "# pixels per inch"
 		self.imgformatcmt = "# image format (*.jpg, *.png, etc.)"
+		self.thumbscalecmt = "# thumbscale for thumbnail sizing"	
 		self.vertrangecmt = "# vertical scaling range"
 		self.cwbwaitcmt = "# wait time for cwbquery timeout"
 		self.cwbattemptscmt = "# number of cwbquery attempts before exiting"

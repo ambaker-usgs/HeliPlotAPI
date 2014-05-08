@@ -9,8 +9,11 @@ from freqResponse import FreqResponse
 from paralleldeconvFilter import ParallelDeconvFilter
 from magnifyData import MagnifyData
 from parallelplotVelocity import ParallelPlotVelocity
+from createThumbnails import CreateThumbnails
+from convertTime import ConvertTime
 
 __all__ = [Kill, KeyboardInterruptError, TimeoutExpiredError,
 		ReadPrestation, ParseConfig, ParallelCwbQuery,
 		PullTraces, FreqResponse, ParallelDeconvFilter,
-		MagnifyData, ParallelPlotVelocity]
+		MagnifyData, ParallelPlotVelocity, createThumbnails,
+		convertTime]
