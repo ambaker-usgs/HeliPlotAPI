@@ -61,6 +61,6 @@ class FreqResponse(object):
 			sys.exit(0)
 			print "Method freqResponse() is terminated!"
 		except Exception as e:
-			print "Exceptoin freqResponse(): " + str(e)
+			print "Exception freqResponse(): " + str(e)
 			sys.exit(0)
 			print "Method freqResponse() is terminated!"

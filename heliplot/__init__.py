@@ -6,8 +6,10 @@ from parseConfig import ParseConfig
 from parallelcwbQuery import ParallelCwbQuery
 from pullTraces import PullTraces
 from freqResponse import FreqResponse
-from parallelDeconvFilter import ParallelDeconvFilter
+from paralleldeconvFilter import ParallelDeconvFilter
+from magnifyData import MagnifyData
 
 __all__ = [Kill, KeyboardInterruptError, TimeoutExpiredError,
 		ReadPrestation, ParseConfig, ParallelCwbQuery,
-		PullTraces, FreqResponse, ParallelDeconvFilter]
+		PullTraces, FreqResponse, ParallelDeconvFilter,
+		MagnifyData]

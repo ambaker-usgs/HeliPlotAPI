@@ -3,7 +3,7 @@
 # This is a test script for HeliPlot module
 from heliplot import kill, readPrestation, parseConfig,\
 			parallelcwbQuery, pullTraces, freqResponse,\
-			parallelDeconvFilter
+			paralleldeconvFilter, magnifyData
 
 # Populate station.cfg using prestation.cfg and stationNames.txt
 # Set user paths and station info
@@ -43,7 +43,7 @@ respargs = {'resppath': pars.resppath, 'filelist': strm.filelist,
 resp.storeResps(**respargs)
 
 # Deconvolve/filter queried stations
-fltr = parallelDeconvFilter.ParallelDeconvFilter()
+fltr = paralleldeconvFilter.ParallelDeconvFilter()
 fltrargs = {'stream': strm.stream, 'streamlen': strm.streamlen,
 		'response': resp.resp, 'EHZfiltertype': pars.EHZfiltertype,
 		'EHZhpfreq': pars.EHZhpfreq, 'EHZnotchfreq': pars.EHZnotchfreq,
@@ -54,4 +54,7 @@ fltrargs = {'stream': strm.stream, 'streamlen': strm.streamlen,
 fltr.launchWorkers(**fltrargs)
 
 # Magnify trace data
-
+mag = magnifyData.MagnifyData()
+magargs = {'flt_streams': fltr.flt_streams, 'magnificationexc': pars.magnificationexc,
+		'magnification_default': pars.magnification_default}
+mag.magnify(**magargs)

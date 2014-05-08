@@ -25,11 +25,14 @@ IU CASY Casey, Antarctica
 IU CCM Cathedral Cave, Missouri, USA
 IU CHTO Chiang Mai, Thailand
 IU COLA College Outpost, Alaska, USA
+IU FUNA Funafuti, Tuvalu
 IU GRFO Grafenberg, Germany
 IU KBL Kabul, Afghanistan
 IU KOWA Kowa, Mali
 IU LCO Las Campanas Astronomical Observatory, Chile
 IU MACI Morro de la Arena, Canary Islands
+IU RAO Raoul, Kermadec Islands
+IU TRQA Tornquist, Argentina
 CU GRGR Grenville, Grenada
 CU TGUH Tegucigalpa, Honduras
 CU GRTK Grand Turk, Turks and Caicos Islands
