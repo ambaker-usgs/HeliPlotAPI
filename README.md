@@ -16,6 +16,7 @@ Class Files
 8. _freqResponse.py_ - pull frequency response for station
 9. _paralleldeconvFilter.py_ - launches pool of workers that deconvolves/filters data 
 10. _magnifyData.py_ - magnify filtered streams using magnification exception list
+11. _parallelplotVelocity.py_ - plot magnified/filtered data using multiprocessing
 
 Build Files/Install
 ===================

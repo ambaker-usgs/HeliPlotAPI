@@ -15,8 +15,10 @@ import os, sys
 from obspy.core.stream import read
 
 class PullTraces(object):
-	# Read MSEED files from query and analyze
 	def analyzeRemove(self, seedpath):
+		# ---------------------------------------	
+		# Read MSEED files from query and analyze
+		# ---------------------------------------	
 		print "------pullTraces() Start------\n"	
 		os.chdir(seedpath)
 		filelist = sorted(os.listdir(seedpath), key=os.path.getctime)

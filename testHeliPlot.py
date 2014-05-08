@@ -3,7 +3,8 @@
 # This is a test script for HeliPlot module
 from heliplot import kill, readPrestation, parseConfig,\
 			parallelcwbQuery, pullTraces, freqResponse,\
-			paralleldeconvFilter, magnifyData
+			paralleldeconvFilter, magnifyData,\
+			parallelplotVelocity
 
 # Populate station.cfg using prestation.cfg and stationNames.txt
 # Set user paths and station info
@@ -57,4 +58,19 @@ fltr.launchWorkers(**fltrargs)
 mag = magnifyData.MagnifyData()
 magargs = {'flt_streams': fltr.flt_streams, 'magnificationexc': pars.magnificationexc,
 		'magnification_default': pars.magnification_default}
-mag.magnify(**magargs)
+magnified_streams = mag.magnify(**magargs)
+
+# Plot filtered/magnified streams
+plt = parallelplotVelocity.ParallelPlotVelocity()
+pltargs = {'streams': magnified_streams, 'plotspath': pars.plotspath,
+		'stationName': resp.stationName, 'magnification': mag.magnification,
+		'vertrange': pars.vertrange, 'datetimePlotstart': pars.datetimePlotstart, 
+		'datetimePlotend': pars.datetimePlotend, 'resx': pars.resx, 
+		'resy': pars.resy, 'pix': pars.pix, 'imgformat': pars.imgformat,
+		'EHZfiltertype': pars.EHZfiltertype, 'EHZhpfreq': pars.EHZhpfreq, 
+		'EHZnotchfreq': pars.EHZnotchfreq, 'BHZfiltertype': pars.BHZfiltertype, 
+		'BHZbplowerfreq': pars.BHZbplowerfreq, 'BHZbpupperfreq': pars.BHZbpupperfreq, 
+		'LHZfiltertype': pars.LHZfiltertype, 'LHZbplowerfreq': pars.LHZbplowerfreq, 
+		'LHZbpupperfreq': pars.LHZbpupperfreq, 'VHZfiltertype': pars.VHZfiltertype, 
+		'VHZlpfreq': pars.VHZlpfreq}
+plt.launchWorkers(**pltargs)

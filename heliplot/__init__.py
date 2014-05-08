@@ -8,8 +8,9 @@ from pullTraces import PullTraces
 from freqResponse import FreqResponse
 from paralleldeconvFilter import ParallelDeconvFilter
 from magnifyData import MagnifyData
+from parallelplotVelocity import ParallelPlotVelocity
 
 __all__ = [Kill, KeyboardInterruptError, TimeoutExpiredError,
 		ReadPrestation, ParseConfig, ParallelCwbQuery,
 		PullTraces, FreqResponse, ParallelDeconvFilter,
-		MagnifyData]
+		MagnifyData, ParallelPlotVelocity]

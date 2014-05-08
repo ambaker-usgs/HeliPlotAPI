@@ -19,16 +19,20 @@ import os, re
 from datetime import datetime, timedelta
 from obspy.core.utcdatetime import UTCDateTime
 	
-# Check if list/dictionary is empty
 def is_empty(structure):
+	# ----------------------------------	
+	# Check if list/dictionary is empty
+	# ----------------------------------	
 	if structure:
 		return False
 	else:
 		return True
 
 class ParseConfig(object):
-	# Set station info/locations/metadata 
 	def setStationData(self):
+		# -----------------------------------	
+		# Set station info/locations/metadata 
+		# -----------------------------------	
 		self.stationdata = self.data['station']
 		self.stationinfo = []
 		self.stationlocation = []
@@ -44,9 +48,12 @@ class ParseConfig(object):
 			tmpexc = re.split(':', tmpmag[i])
 			self.magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
 
-	# Get/set current date/time and subtract a day
-	# this will always pull the current time on the system
 	def setExecTime(self, **kwargs): 	
+		# ----------------------------------------------------	
+		# Get/set current date/time and subtract a day
+		# this will always pull the current time on the system
+		# ----------------------------------------------------	
+		
 		# kwargs = {year, month, day, hour, minute, second, microsecond} (user input)	
 		empty = is_empty(kwargs)	
 		if empty:	

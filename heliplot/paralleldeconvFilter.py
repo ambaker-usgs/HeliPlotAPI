@@ -2,7 +2,7 @@
 
 # --------------------------------------------------------------
 # Author: Alejandro Gonzales 
-# Filename: parallelDeconvFilter.py
+# Filename: paralleldeconvFilter.py
 # --------------------------------------------------------------
 # Purpose: Simulates/filters station data stream. Simulating
 #	   produces a deconvolved signal. Pre-filter bandpass

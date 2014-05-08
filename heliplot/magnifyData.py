@@ -13,6 +13,9 @@ import os, sys, re
 
 class MagnifyData(object):
 	def magnify(self, flt_streams, magnificationexc, magnification_default):
+		# ---------------------------	
+		# Magnifies filtered streams 	
+		# ---------------------------	
 		print "------magnifyData() Start------\n"
 		streams = flt_streams
 		streamlen = len(streams)
