@@ -2,7 +2,8 @@
 
 # This is a test script for HeliPlot module
 from heliplot import kill, readPrestation, parseConfig,\
-			parallelcwbQuery, pullTraces, freqResponse
+			parallelcwbQuery, pullTraces, freqResponse,\
+			parallelDeconvFilter
 
 # Populate station.cfg using prestation.cfg and stationNames.txt
 # Set user paths and station info
@@ -35,8 +36,22 @@ strm = pullTraces.PullTraces()
 seedpath = pars.seedpath
 strm.analyzeRemove(seedpath)
 
-# Pull freq responses from queried station sand store
+# Pull freq responses from queried stations and store
 resp = freqResponse.FreqResponse()
 respargs = {'resppath': pars.resppath, 'filelist': strm.filelist,
 		'streamlen': strm.streamlen, 'datetimeUTC': pars.datetimeUTC} 
 resp.storeResps(**respargs)
+
+# Deconvolve/filter queried stations
+fltr = parallelDeconvFilter.ParallelDeconvFilter()
+fltrargs = {'stream': strm.stream, 'streamlen': strm.streamlen,
+		'response': resp.resp, 'EHZfiltertype': pars.EHZfiltertype,
+		'EHZhpfreq': pars.EHZhpfreq, 'EHZnotchfreq': pars.EHZnotchfreq,
+		'BHZfiltertype': pars.BHZfiltertype, 'BHZbplowerfreq': pars.BHZbplowerfreq,
+		'BHZbpupperfreq': pars.BHZbpupperfreq, 'LHZfiltertype': pars.LHZfiltertype,
+		'LHZbplowerfreq': pars.LHZbplowerfreq, 'LHZbpupperfreq': pars.LHZbpupperfreq,
+		'VHZfiltertype': pars.VHZfiltertype, 'VHZlpfreq': pars.VHZlpfreq}
+fltr.launchWorkers(**fltrargs)
+
+# Magnify trace data
+

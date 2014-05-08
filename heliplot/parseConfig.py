@@ -27,6 +27,64 @@ def is_empty(structure):
 		return True
 
 class ParseConfig(object):
+	# Set station info/locations/metadata 
+	def setStationData(self):
+		self.stationdata = self.data['station']
+		self.stationinfo = []
+		self.stationlocation = []
+		for s in self.stationdata:
+			tmpstation = re.split('\t', s)
+			self.stationinfo.append(tmpstation[0].strip())
+			self.stationlocation.append(tmpstation[1].strip())
+
+		# Split/store magnification exception list
+		tmpmag = re.split(',', self.magnificationexc)
+		self.magnificationexc = {}
+		for i in range(len(tmpmag)):
+			tmpexc = re.split(':', tmpmag[i])
+			self.magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
+
+	# Get/set current date/time and subtract a day
+	# this will always pull the current time on the system
+	def setExecTime(self, **kwargs): 	
+		# kwargs = {year, month, day, hour, minute, second, microsecond} (user input)	
+		empty = is_empty(kwargs)	
+		if empty:	
+			self.time = datetime.utcnow() - timedelta(days=1)	
+		else:	
+			yr = kwargs['year']
+			mn = kwargs['month']
+			dy = kwargs['day']
+			hr = kwargs['hour']
+			min = kwargs['minute']
+			sec = kwargs['second']
+			ms = kwargs['microsecond']
+			self.time = datetime(yr, mn, dy, hr, min, sec, ms) - timedelta(days=1)	
+		time2 = self.time + timedelta(hours=1)
+		time2str = time2.strftime("%Y%m%d_%H:00:00")
+		time3 = time2 + timedelta(days=1)
+		time3str = time3.strftime("%Y%m%d_%H:00:00")
+		self.datetimePlotstart = UTCDateTime(time2str)
+		self.datetimePlotend = UTCDateTime(time3str)
+		print "datetimePlotstart:	%s" % str(self.datetimePlotstart)
+		print "datetimePlotend: 	%s" % str(self.datetimePlotend)
+		timestring = str(self.time)
+		timestring = re.split("\\.", timestring)
+		tmp = timestring[0]
+		timedate = tmp.replace("-", "/")
+		datetimeQuery = timedate.strip()
+		#datetimeQuery = "2013/09/12 13:30:00"
+		self.datetimeQuery = datetimeQuery
+		tmpquery = re.split(' ', self.datetimeQuery)
+		tmpdate = tmp[0].strip()
+		tmptime = tmp[1].strip()
+		print "datetimeQuery: 		%s" % str(self.datetimeQuery)
+		tmpUTC = datetimeQuery
+		tmpUTC = tmpUTC.replace("/", "")
+		tmpUTC = tmpUTC.replace(" ", "_")
+		self.datetimeUTC = UTCDateTime(str(tmpUTC))
+		print "datetimeUTC:		%s" % str(self.datetimeUTC) + "\n"
+	
 	# Read in main station config file (station.cfg)
 	def __init__(self, **kwargs):
 		os.chdir('/home/asluser/HeliPlotAPI')
@@ -105,61 +163,3 @@ class ParseConfig(object):
 					elif "magnification exceptions" in newline[1]:
 						self.magnificationexc = newline[0].strip()
 		fin.close()	# close station.cfg
-
-	# Set station info/locations/metadata 
-	def setStationData(self):
-		self.stationdata = self.data['station']
-		self.stationinfo = []
-		self.stationlocation = []
-		for s in self.stationdata:
-			tmpstation = re.split('\t', s)
-			self.stationinfo.append(tmpstation[0].strip())
-			self.stationlocation.append(tmpstation[1].strip())
-
-		# Split/store magnification exception list
-		tmpmag = re.split(',', self.magnificationexc)
-		self.magnificationexc = {}
-		for i in range(len(tmpmag)):
-			tmpexc = re.split(':', tmpmag[i])
-			self.magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
-
-	# Get/set current date/time and subtract a day
-	# this will always pull the current time on the system
-	def setExecTime(self, **kwargs): 	
-		# kwargs = {year, month, day, hour, minute, second, microsecond} (user input)	
-		empty = is_empty(kwargs)	
-		if empty:	
-			self.time = datetime.utcnow() - timedelta(days=1)	
-		else:	
-			yr = kwargs['year']
-			mn = kwargs['month']
-			dy = kwargs['day']
-			hr = kwargs['hour']
-			min = kwargs['minute']
-			sec = kwargs['second']
-			ms = kwargs['microsecond']
-			self.time = datetime(yr, mn, dy, hr, min, sec, ms) - timedelta(days=1)	
-		time2 = self.time + timedelta(hours=1)
-		time2str = time2.strftime("%Y%m%d_%H:00:00")
-		time3 = time2 + timedelta(days=1)
-		time3str = time3.strftime("%Y%m%d_%H:00:00")
-		self.datetimePlotstart = UTCDateTime(time2str)
-		self.datetimePlotend = UTCDateTime(time3str)
-		print "datetimePlotstart:	%s" % str(self.datetimePlotstart)
-		print "datetimePlotend: 	%s" % str(self.datetimePlotend)
-		timestring = str(self.time)
-		timestring = re.split("\\.", timestring)
-		tmp = timestring[0]
-		timedate = tmp.replace("-", "/")
-		datetimeQuery = timedate.strip()
-		#datetimeQuery = "2013/09/12 13:30:00"
-		self.datetimeQuery = datetimeQuery
-		tmpquery = re.split(' ', self.datetimeQuery)
-		tmpdate = tmp[0].strip()
-		tmptime = tmp[1].strip()
-		print "datetimeQuery: 		%s" % str(self.datetimeQuery)
-		tmpUTC = datetimeQuery
-		tmpUTC = tmpUTC.replace("/", "")
-		tmpUTC = tmpUTC.replace(" ", "_")
-		self.datetimeUTC = UTCDateTime(str(tmpUTC))
-		print "datetimeUTC:		%s" % str(self.datetimeUTC) + "\n"

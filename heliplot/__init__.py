@@ -1,11 +1,13 @@
 # Imports all methods from HeliPlot class files 
 from kill import Kill 
+from interrupt import KeyboardInterruptError, TimeoutExpiredError
 from readPrestation import ReadPrestation 
 from parseConfig import ParseConfig 
-from parallelcwbQuery import ParallelCwbQuery, KeyboardInterruptError, TimeoutExpiredError 
+from parallelcwbQuery import ParallelCwbQuery
 from pullTraces import PullTraces
 from freqResponse import FreqResponse
+from parallelDeconvFilter import ParallelDeconvFilter
 
-__all__ = [Kill, ReadPrestation, ParseConfig, ParallelCwbQuery,
-		KeyboardInterruptError, TimeoutExpiredError,
-		PullTraces, FreqResponse]
+__all__ = [Kill, KeyboardInterruptError, TimeoutExpiredError,
+		ReadPrestation, ParseConfig, ParallelCwbQuery,
+		PullTraces, FreqResponse, ParallelDeconvFilter]

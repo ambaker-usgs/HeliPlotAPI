@@ -18,10 +18,7 @@ import os, sys, string, subprocess
 import time, signal, glob
 
 from kill import Kill 
-
-# Exception classes 
-class KeyboardInterruptError(Exception): pass	
-class TimeoutExpiredError(Exception): pass	
+from interrupt import KeyboardInterruptError, TimeoutExpiredError
 
 # Unpack self from parallel method args and call cwbQuery()
 def unwrap_self_cwbQuery(args, **kwargs):
@@ -48,7 +45,7 @@ class ParallelCwbQuery(object):
 					stdout=subprocess.PIPE, stderr=subprocess.PIPE,
 					preexec_fn=os.setsid, shell=True)
 				(out, err) = subproc.communicate(timeout=self.cwbtimeout) # waits
-				#time.sleep(3)
+				#time.sleep(2)
 
 				# Set pids and kill args for killSubprocess() method 
 				self.parentpid = os.getppid()
@@ -112,6 +109,7 @@ class ParallelCwbQuery(object):
 		self.duration = duration
 		self.seedpath = seedpath	
 		self.ipaddress = ipaddress
+		
 		for f in files:
 			os.remove(f)	# remove tmp seed files from SeedFiles dir
 		stationlen = len(stationinfo)
