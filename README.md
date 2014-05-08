@@ -15,6 +15,7 @@ Class Files
 7. _pullTraces.py_ - pull trace stats from station data stream (removes traces with sr=0Hz)
 8. _freqResponse.py_ - pull frequency response for station
 9. _paralleldeconvFilter.py_ - launches pool of workers that deconvolves/filters data 
+10. _magnifyData.py_ - magnify filtered streams using magnification exception list
 
 Build Files/Install
 ===================
