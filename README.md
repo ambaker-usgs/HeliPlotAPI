@@ -17,6 +17,8 @@ Class Files
 9. _paralleldeconvFilter.py_ - launches pool of workers that deconvolves/filters data 
 10. _magnifyData.py_ - magnify filtered streams using magnification exception list
 11. _parallelplotVelocity.py_ - plot magnified/filtered data using multiprocessing
+12. _createThumbnails.py_ - create thumbnails from output plots
+13. _convertTime.py_ - convert python time module to min/sec for method timing
 
 Build Files/Install
 ===================
