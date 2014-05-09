@@ -37,7 +37,7 @@ if __name__ == '__main__':
 	readcfg.writeStations()
 	t2 = time.time()	
 	timelenprestation = t2 - t1
-
+	
 	# Parse station.cfg and set execution time
 	pars = parseConfig.ParseConfig()	# initialize parser object
 	t1 = time.time()	
