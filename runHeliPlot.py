@@ -12,6 +12,10 @@ if __name__ == '__main__':
 	# Main program for running each HeliPlot module and tracking times
 	# **NOTE: readPrestation methods do not need to be run if stationNames
 	# 	  text file remains the same
+
+	# -------------------------
+	# Set Variables	
+	# -------------------------
 	totalTime = 0
 	keys = []	# keys for methodTime dict
 	methodTime = {}	# stores all method times in a dictionary of method names 
@@ -25,8 +29,10 @@ if __name__ == '__main__':
 	timelenplot = 0
 	timelenthumb = 0
 
+	# ---------------------------------------------------------------	
 	# Populate station.cfg using prestation.cfg and stationNames.txt
 	# Set user paths and station info
+	# ---------------------------------------------------------------	
 	readcfg = readPrestation.ReadPrestation()
 	t1 = time.time()	
 	readcfg.readConfig()
@@ -38,7 +44,9 @@ if __name__ == '__main__':
 	t2 = time.time()	
 	timelenprestation = t2 - t1
 	
+	# -----------------------------------------	
 	# Parse station.cfg and set execution time
+	# -----------------------------------------	
 	pars = parseConfig.ParseConfig()	# initialize parser object
 	t1 = time.time()	
 	pars.setStationData()
@@ -51,7 +59,9 @@ if __name__ == '__main__':
 	keys.append('parse')	
 	methodTime['parse'] = timelenparse
 
+	# --------------------------------------	
 	# Launch cwbQuery multiprocessing pool
+	# --------------------------------------	
 	query = parallelcwbQuery.ParallelCwbQuery()	# initialize parallel cwbQuery object
 	t1 = time.time()	
 	queryargs = {'stationinfo': pars.stationinfo, 'cwbquery': pars.cwbquery, 
@@ -64,7 +74,9 @@ if __name__ == '__main__':
 	keys.append('cwb')	
 	methodTime['cwb'] = timelencwb
 
+	# --------------------------------------	
 	# Pull traces from cwbQuery and analyze
+	# --------------------------------------	
 	strm = pullTraces.PullTraces()
 	t1 = time.time()	
 	seedpath = pars.seedpath
@@ -73,22 +85,27 @@ if __name__ == '__main__':
 	timelentrace = t2 - t1
 	keys.append('trace')	
 	methodTime['trace'] = timelentrace
-
+	
+	# ----------------------------------------------------	
 	# Pull freq responses from queried stations and store
+	# ----------------------------------------------------	
 	resp = freqResponse.FreqResponse()
 	t1 = time.time()	
-	respargs = {'resppath': pars.resppath, 'filelist': strm.filelist,
-			'streamlen': strm.streamlen, 'datetimeUTC': pars.datetimeUTC} 
+	respargs = {'resppath': pars.resppath, 'stream': strm.stream, 
+			'filelist': strm.filelist, 'streamlen': strm.streamlen, 
+			'datetimeUTC': pars.datetimeUTC} 
 	resp.storeResps(**respargs)
 	t2 = time.time()
 	timelenresp = t2 - t1
 	keys.append('resp')	
 	methodTime['resp'] = timelenresp
 
+	# -----------------------------------
 	# Deconvolve/filter queried stations
+	# -----------------------------------
 	fltr = paralleldeconvFilter.ParallelDeconvFilter()
 	t1 = time.time()	
-	fltrargs = {'stream': strm.stream, 'streamlen': strm.streamlen,
+	fltrargs = {'stream': resp.stream, 'streamlen': resp.streamlen,
 			'response': resp.resp, 'EHZfiltertype': pars.EHZfiltertype,
 			'EHZhpfreq': pars.EHZhpfreq, 'EHZnotchfreq': pars.EHZnotchfreq,
 			'BHZfiltertype': pars.BHZfiltertype, 'BHZbplowerfreq': pars.BHZbplowerfreq,
@@ -101,7 +118,9 @@ if __name__ == '__main__':
 	keys.append('deconv')	
 	methodTime['deconv'] = timelendeconv
 
+	# -------------------	
 	# Magnify trace data
+	# -------------------	
 	mag = magnifyData.MagnifyData()
 	t1 = time.time()	
 	magargs = {'flt_streams': fltr.flt_streams, 'magnificationexc': pars.magnificationexc,
@@ -112,7 +131,9 @@ if __name__ == '__main__':
 	keys.append('magnify')	
 	methodTime['magnify'] = timelenmagnify
 
+	# --------------------------------	
 	# Plot filtered/magnified streams
+	# --------------------------------	
 	plt = parallelplotVelocity.ParallelPlotVelocity()
 	t1 = time.time()	
 	pltargs = {'streams': magnified_streams, 'plotspath': pars.plotspath,
@@ -132,7 +153,9 @@ if __name__ == '__main__':
 	keys.append('plot')	
 	methodTime['plot'] = timelenplot
 
+	# ----------------------------------	
 	# Create thumbnails from heli plots 
+	# ----------------------------------	
 	thm = createThumbnails.CreateThumbnails()
 	t1 = time.time()
 	thmargs = {'thumbpath': pars.thumbpath, 'plotspath': pars.plotspath,
@@ -143,7 +166,9 @@ if __name__ == '__main__':
 	keys.append('thumb')	
 	methodTime['thumb'] = timelenthumb
 
+	# -------------------------------------------------------------------
 	# Get total time of all modules/methods (don't use linux 'time' cmd)
+	# -------------------------------------------------------------------
 	timeobj = convertTime.ConvertTime()	
 	totalTime = (timelenparse + timelencwb + timelentrace +
 			timelenresp + timelendeconv + timelenmagnify +

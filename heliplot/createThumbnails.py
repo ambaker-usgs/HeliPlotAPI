@@ -25,7 +25,8 @@ class CreateThumbnails(object):
 
 		# read from output plots dir
 		imgfiles = glob.glob(plotspath+"*")
-		print "thumbscale = " + str(thumbscale) + "\n"	
+		print "thumbscale = " + str(thumbscale) 
+		cnt = 0	
 		for f in imgfiles:
 			tmp = re.split('/', f)
 			tmplen = len(tmp)
@@ -34,3 +35,5 @@ class CreateThumbnails(object):
 			fout = tmp[1].strip()	# pull station name
 			fout = fout + "_24hr.png"	# append png
 			img.thumbnail(f, fout, scale=thumbscale)
+			cnt = cnt + 1
+		print "num thumbnails = " + str(cnt) + "\n"
