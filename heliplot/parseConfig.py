@@ -94,7 +94,9 @@ class ParseConfig(object):
 	
 	# Read in main station config file (station.cfg)
 	def __init__(self, **kwargs):
-		os.chdir('/home/asluser/HeliPlotAPI')
+		#os.chdir('/home/asluser/HeliPlotAPI')
+		home = os.getcwd()
+		os.chdir(home)	
 		self.home = os.getcwd()	
 		self.data = {}
 		self.data['station'] = []	# list for multiple stations

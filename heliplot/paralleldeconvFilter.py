@@ -74,42 +74,47 @@ class ParallelDeconvFilter(object):
 				stderr=subprocess.PIPE, shell=True)
 			(out, err) = subproc.communicate(timeout=10)	# waits for child proc
 
+			# Store/print pids for exception kills
 			self.parentpid = os.getppid()
 			self.childpid = os.getpid()
 			self.gchildpid = subproc.pid
 			print "parent pid: " + str(self.parentpid)
 			print "child  pid: " + str(self.childpid)
 			print "gchild pid: " + str(self.gchildpid)
+
+			# Pull sensitivity from subproc
 			tmps = out.strip()
 			tmps = re.split(':', tmps)
 			s = float(tmps[1].strip())
-			print "sensitivity: " + str(s)
+			#print "sensitivity: " + str(s)
 			sys.stdout.flush()
 			sys.stderr.flush()
 			self.subprocess = False	# subprocess finished
 
-			# divide data by sensitivity
-			#stream.simulate(paz_remove=None, pre_filt=(c1, c2, c3, c4), seedresp=response, taper='True')	# deconvolution (this will be a flag for the user)
-			
+			# Divide data by sensitivity
+			# stream.simulate(paz_remove=None, pre_filt=(c1, c2, c3, c4), 
+			# seedresp=response, taper='True')	# deconvolution (this will be a flag 
+			# for the user)
 			stream[0].data = stream[0].data / s	# remove sensitivity gain
 
-			# remove DC offset (transient response)
+			# Remove DC offset (transient response)
 			stream.detrend('demean')	# removes mean in data set
-			stream.taper(p=0.01)	# tapers beginning/end to remove transient resp
+			stream.taper(p=0.01)	# cos tapers beginning/end to remove transient resp
 
+			# Filter stream based on channel 
 			if filtertype == "bandpass":
-				print "Filtering stream (bandpass)"
+				'''print "Filtering stream (bandpass)"
 				print "bp lower freq: " + str(bplowerfreq)
-				print "bp upper freq: " + str(bpupperfreq)
+				print "bp upper freq: " + str(bpupperfreq)'''
 				stream.filter(filtertype, freqmin=bplowerfreq,
 					freqmax=bpupperfreq, corners=4)	# bp filter 
 			elif filtertype == "lowpass":
-				print "Filtering stream (lowpass)"
-				print "lp freq: " + str(lpfreq)
+				'''print "Filtering stream (lowpass)"
+				print "lp freq: " + str(lpfreq)'''
 				stream.filter(filtertype, freq=lpfreq, corners=4) # lp filter 
 			elif filtertype == "highpass":
-				print "Filtering stream (highpass)"
-				print "hpfreq: " + str(hpfreq)
+				'''print "Filtering stream (highpass)"
+				print "hpfreq: " + str(hpfreq)'''
 				stream.filter(filtertype, freq=hpfreq, corners=4) # hp filter
 			print "Filtered stream: " + str(stream) + "\n"
 			return stream
@@ -166,7 +171,7 @@ class ParallelDeconvFilter(object):
 		self.LHZbpupperfreq = LHZbpupperfreq
 		self.VHZfiltertype = VHZfiltertype
 		self.VHZlpfreq = VHZlpfreq
-		
+
 		for i in range(streamlen):
 			# Merge traces to eliminate small data lengths, 
 			# method 0 => no overlap of traces (i.e. overwriting
@@ -180,11 +185,12 @@ class ParallelDeconvFilter(object):
 		# Initialize multiprocessing pools
 		PROCESSES = multiprocessing.cpu_count()
 		print "PROCESSES:	" + str(PROCESSES)
+		print "streamlen:	" + str(streamlen) + "\n"	
 		pool = multiprocessing.Pool(PROCESSES)
 		try:
 			self.poolpid = os.getpid()
 			self.poolname = "deconvFilter()"
-			print "pool PID:	" + str(self.poolpid) + "\n"
+			#print "pool PID:	" + str(self.poolpid) + "\n"
 			flt_streams = pool.map(unwrap_self_deconvFilter,
 				zip([self]*streamlen, stream, response))
 			pool.close()

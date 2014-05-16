@@ -53,7 +53,7 @@ class PullTraces(object):
 					j = 0	# stream will change sizes when trace is removed
 					while j < range(stream[i].count()):
 						if j == stream[i].count():	
-							break	# index = num traces b
+							break	# index = num traces 
 						tr = stream[i][j]	# tmp trace
 						if tr.stats['sampling_rate'] == 0.0:
 							if not RM:	
@@ -64,7 +64,7 @@ class PullTraces(object):
 							stream[i].remove(tr)	# rm empty trace
 							j = 0	# reset index for new size
 						else:
-							j = j + 1	
+							j = j + 1	# mv to next element	
 					if RM:
 						print "Final stream with removed traces:"
 						print stream[i]

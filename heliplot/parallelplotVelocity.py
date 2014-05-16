@@ -153,11 +153,12 @@ class ParallelPlotVelocity(object):
 		# Initialize multiprocessing pools for plotting
 		PROCESSES = multiprocessing.cpu_count()
 		print "PROCESSES:	" + str(PROCESSES)
+		print "streamlen:	" + str(streamlen) + "\n"	
 		pool = multiprocessing.Pool(PROCESSES)
 		try:
 			self.poolpid = os.getpid()
 			self.poolname = "plotVelocity()"
-			print "pool PID:	" + str(self.poolpid) + "\n"
+			#print "pool PID:	" + str(self.poolpid) + "\n"
 			pool.map(unwrap_self_plotVelocity, zip([self]*streamlen,
 				streams, stationName))	# thread plots
 			pool.close()

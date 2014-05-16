@@ -120,11 +120,12 @@ class ParallelCwbQuery(object):
 		# ---------------------------------------------
 		PROCESSES = multiprocessing.cpu_count()
 		print "PROCESSES:	" + str(PROCESSES)
+		print "stationlen:	" + str(stationlen) + "\n"	
 		pool = multiprocessing.Pool(PROCESSES)
 		try:
 			self.poolpid = os.getpid()
 			self.poolname = "cwbQuery()"
-			print "pool PID:	" + str(self.poolpid) + "\n"
+			#print "pool PID:	" + str(self.poolpid) + "\n"
 			pool.map(unwrap_self_cwbQuery, zip([self]*stationlen, stationinfo))
 			
 			# pool.close()/pool.terminate() must be called before pool.join()

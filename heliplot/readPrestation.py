@@ -23,7 +23,9 @@ class ReadPrestation(object):
 		# ---------------------------------
 		# Open and read list of stations
 		# ---------------------------------
-		os.chdir('/home/asluser/HeliPlotAPI/')	
+		#os.chdir('/home/asluser/HeliPlotAPI/')	
+		home = os.getcwd()	
+		os.chdir(home)	
 		self.stations = []	# list of stations
 		self.stationlist = []	# list for edited station names
 		self.locations = []	# list of locations for each station
@@ -157,7 +159,7 @@ class ReadPrestation(object):
 		cfgout.write(str(self.magnificationexc) + "\t" + self.magnificationexccmt + "\n\n")
 
 	def writeStations(self):
-		print "writeStations()"
+		print "writeStations()\n"
 		cfgout = self.cfgout
 		cfgout.write(self.stationcmt + "\n")
 		for i in range(len(self.stationlist)):
