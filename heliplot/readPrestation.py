@@ -82,7 +82,7 @@ class ReadPrestation(object):
 		# ---------------------------
 		# Server variables can change
 		# ---------------------------
-		print "writeDefaultVariables()"	
+		print "\nwriteDefaultVariables()"	
 		self.cfgout = open('station.cfg', 'w')	# closed in writeStations()
 		cfgout = self.cfgout
 		cfgout.write(self.cfgcmt)
