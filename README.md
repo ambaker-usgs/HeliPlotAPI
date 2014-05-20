@@ -27,3 +27,8 @@ Build Files/Install
 2. _python_ _setup.py_ _sdist_ - hard links programs to distribution directory and creates tarball
 3. _python_ _setup.py_ _install_ - installs HeliPlot package to python site-packages
 4. _runHeliPlot.py_ - run program for HeliPlot classes (./_runHeliPlot.py_ to run)
+
+Crontab Shell/Perl Scripts
+==========================
+1. _killHeli.sh_ - looks for current running/hanging heli processes and kills
+2. _run_heli.pl_ - setup script that runs _runHeliPlot.py_ in a crontab (also calls _killHeli.sh_)
