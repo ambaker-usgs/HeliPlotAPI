@@ -71,7 +71,8 @@ sub generate_heliplots {
   # want these to be local
   my ($shll, $kill, $out);
   my ($cmd, $result);
-  my $rundir = "/home/ANSSEQ/agonzales/HeliPlotAPI";
+  #my $rundir = "/home/ANSSEQ/agonzales/Heli/HeliPlotAPI";
+  my $rundir = "/home/asluser/Heli/HeliPlotAPI/run_heli"; 
 
   chdir $rundir || die "Cannot cd to $rundir\n";
   print "change directory to $rundir\n";
@@ -84,8 +85,15 @@ sub generate_heliplots {
      print "Error $out running run_kill()\n";
   } 
   
-  $cmd = "./runHeliPlot.py 2>&1";
+  $cmd = "./HeliPlot.py 2>&1";
   print "invoke heliplot generation with $cmd\n";
+  $result = run_heli($cmd);
+  if ($result != 0) {
+     print "Error $result running $cmd\n";
+  }
+
+  $cmd = "./run_heli_24hr.py 2>&1";
+  print "\ninvoke heliplot html generation with $cmd\n";
   $result = run_heli($cmd);
   if ($result != 0) {
      print "Error $result running $cmd\n";

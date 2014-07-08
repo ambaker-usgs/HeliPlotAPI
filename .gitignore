@@ -1,2 +1,4 @@
 # This file ignores all compiled python programs
 /heliplot/*.pyc
+prestation.cfg
+station.cfg
