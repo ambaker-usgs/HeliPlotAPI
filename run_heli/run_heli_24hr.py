@@ -176,15 +176,3 @@ if __name__ == '__main__':
 	#heli.gifConvert()
 	heli.readImages()
 	heli.heliHTML()
-			
-
-
-
-
-
-
-
-
-
-
-

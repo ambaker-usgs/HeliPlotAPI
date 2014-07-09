@@ -71,8 +71,7 @@ sub generate_heliplots {
   # want these to be local
   my ($shll, $kill, $out);
   my ($cmd, $result);
-  #my $rundir = "/home/ANSSEQ/agonzales/Heli/HeliPlotAPI";
-  my $rundir = "/home/asluser/Heli/HeliPlotAPI/run_heli"; 
+  my $rundir = "/home/ANSSEQ/agonzales/HeliPlotAPI/run_heli";
 
   chdir $rundir || die "Cannot cd to $rundir\n";
   print "change directory to $rundir\n";
