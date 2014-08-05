@@ -10,7 +10,7 @@ Splits HeliPlot program into separate class files to be used as an API package
 
 ###Setup/Install
 
-    Install HeliPlot package to python site-package:
+    Install HeliPlot package to python site-package
         
 	python setup.py install
 
