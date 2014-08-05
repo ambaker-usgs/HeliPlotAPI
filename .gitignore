@@ -1,4 +1,5 @@
 # This file ignores all compiled python programs
-/heliplot/*.pyc
+heliplot/*.pyc
 prestation.cfg
 station.cfg
+run_heli/run_heli.pl
