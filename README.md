@@ -3,12 +3,16 @@ HeliPlotAPI
 
 Splits HeliPlot program into separate class files to be used as an API package
 
-Setup/Install
-===================
+###Directory Structure
+    * heliplot/  - directory containing HeliPlot class files (used in setup.py script)
+    * run_heli/  - directory containing user run scripts 
 
-1. _/heliplot/_ - directory containing HeliPlot class files (used in setup script)
-2. _setup.py_ - packages HeliPlot class files using python build structure
-3. _python_ _setup.py_ _install_ - installs HeliPlot package to python site-packages
+###Setup/Install
+
+    Install HeliPlot package to python site-package:
+```python
+    python setup.py install
+```
 
 Run Scripts
 ==========================
