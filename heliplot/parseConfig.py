@@ -97,7 +97,7 @@ class ParseConfig(object):
 		#os.chdir('/home/asluser/HeliPlotAPI')
 		home = os.getcwd()
 		os.chdir(home)	
-		self.home = os.getcwd()	
+		self.home = home 
 		self.data = {}
 		self.data['station'] = []	# list for multiple stations
 		STFLAG = False

@@ -16,9 +16,9 @@ class CreateThumbnails(object):
 	def convertImage(self, thumbpath, plotspath, thumbscale):
 		os.chdir(thumbpath)	# cd into thumbnails dir
 		if (thumbpath == plotspath):
-			print "Image/thumbnail paths match: NOT removing previous thumbnails..."
+			print "Image/thumbnail paths match: NOT removing current images..."
 		else:
-			print "Image/thumbnail paths DO NOT match: removing previous thumbnails..."
+			print "Image/thumbnail paths DO NOT match: removing previous images..."
 			thmfiles = glob.glob(thumbpath+"*")
 			for f in thmfiles:
 				os.remove(f)	# rm tmp thumbnails from Thumbnails dir
