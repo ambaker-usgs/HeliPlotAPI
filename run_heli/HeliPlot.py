@@ -44,13 +44,16 @@ if __name__ == '__main__':
 	t2 = time.time()	
 	timelenprestation = t2 - t1
 	
-	# -----------------------------------------	
+	# -------------------------------------------	
 	# Parse station.cfg and set execution time
-	# -----------------------------------------	
+	# User can set execute specific times using:
+	# timeargs = {'year':, 'month':, ...}
+	# pars.setExecTime{**timeargs}
+	# -------------------------------------------	
 	pars = parseConfig.ParseConfig()	# initialize parser object
 	t1 = time.time()	
 	pars.setStationData()
-	timeargs = {'year': 2014, 'month': 04, 'day': 21, 'hour': 17, 
+	timeargs = {'year': 2014, 'month': 8, 'day': 20, 'hour': 9, 
 			'minute': 30, 'second': 0, 'microsecond': 0}
 	#pars.setExecTime(**timeargs)
 	pars.setExecTime()
