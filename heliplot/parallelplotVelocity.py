@@ -75,9 +75,7 @@ class ParallelPlotVelocity(object):
 			oldtime = stream[0].stats.starttime	
 			stream.trim(starttime=plotstart, nearest_sample=False)
 			newtime = stream[0].stats.starttime	
-			print "plotstart = " + str(plotstart) 
-			print "oldtime = " + str(oldtime)
-			print "newtime = " + str(newtime)
+			print stream 
 			stream.plot(startime=plotstart,
 				endtime=plotend,
 				type='dayplot', interval=60,
