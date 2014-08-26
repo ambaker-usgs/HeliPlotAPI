@@ -66,13 +66,25 @@ class ParallelPlotVelocity(object):
 			dpl = plt.figure()
 			titlestartTime = self.datetimePlotstart.strftime("%Y/%m/%d %H:%M")
 			titlestartTime = titlestartTime + " UTC"
-			stream.plot(startime=self.datetimePlotstart,
-				endtime=self.datetimePlotend,
+			plotstart = self.datetimePlotstart	
+			plotend = self.datetimePlotend	
+			
+			# Trim stream to starttime of plot
+			# Round up to the nearest sample, this will take care
+			# of sample drift for non-Q330 signals
+			oldtime = stream[0].stats.starttime	
+			stream.trim(starttime=plotstart, nearest_sample=False)
+			newtime = stream[0].stats.starttime	
+			print "plotstart = " + str(plotstart) 
+			print "oldtime = " + str(oldtime)
+			print "newtime = " + str(newtime)
+			stream.plot(startime=plotstart,
+				endtime=plotend,
 				type='dayplot', interval=60,
 				vertical_scaling_range=self.vertrange,
 				right_vertical_labels=False, number_of_ticks=7,
 				one_tick_per_line=True, color=['k'], fig=dpl,
-				show_y_UTC_label=False, size=(self.resx,self.resy),
+				show_y_UTC_label=True, size=(self.resx,self.resy),
 				dpi=self.pix, title_size=-1)
 
 			# set title, x/y labels and tick marks
@@ -94,7 +106,7 @@ class ParallelPlotVelocity(object):
 			if starthr < 23:
 				startlen = 23 - starthr + 1	# hours are from 0-23
 			else:
-				startlen = 0
+				startlen = 0	
 			startlist = range(starthr, starthr+startlen)	# start of list 0-23
 			startlen = len(startlist)
 			timelist[0:startlen] = startlist	# end of start should be 23
@@ -102,9 +114,9 @@ class ParallelPlotVelocity(object):
 			for i in range(len(timelist)):
 				timelist[i] = str(timelist[i]) + ":00"
 			plt.yticks(posilist, timelist, fontsize=9)	# times in position
-			print
 			#dpi=self.pix, size=(self.resx,self.resy))
 			plt.savefig(stationName+"."+self.imgformat)
+			print	
 		except KeyboardInterrupt:
 			print "KeyboardInterrupt plotVelocity(): terminate workers..."
 			raise KeyboardInterruptError()

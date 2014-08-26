@@ -86,12 +86,13 @@ class ParseConfig(object):
 		tmpdate = tmp[0].strip()
 		tmptime = tmp[1].strip()
 		print "datetimeQuery: 		%s" % str(self.datetimeQuery)
+		print "queryDuration:		%s" % str(self.duration)	
 		tmpUTC = datetimeQuery
 		tmpUTC = tmpUTC.replace("/", "")
 		tmpUTC = tmpUTC.replace(" ", "_")
 		self.datetimeUTC = UTCDateTime(str(tmpUTC))
 		print "datetimeUTC:		%s" % str(self.datetimeUTC) + "\n"
-	
+			
 	# Read in main station config file (station.cfg)
 	def __init__(self, **kwargs):
 		#os.chdir('/home/asluser/HeliPlotAPI')
