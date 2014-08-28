@@ -101,7 +101,7 @@ class ParallelPlotVelocity(object):
 			timelist = [0 for i in range(24)]	# timelist for tick hours
 			timelen = len(timelist)
 			starthr = hours[0]	# start hour
-			if starthr < 23:
+			if starthr <= 23:
 				startlen = 23 - starthr + 1	# hours are from 0-23
 			else:
 				startlen = 0	

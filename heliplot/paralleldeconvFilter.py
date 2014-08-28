@@ -96,22 +96,19 @@ class ParallelDeconvFilter(object):
 			# stream.simulate(paz_remove=None, pre_filt=(c1, c2, c3, c4), 
 			# 	seedresp=response, taper='True') 
 
-			# Remove DC offset (transient response)
+			# Remove transient response and decimate signals to SR=1Hz 
+			decfactor = int(stream[0].stats.sampling_rate)
 			stream.detrend('demean')	# removes mean in data set
 			stream.taper(p=0.01)	# cos tapers beginning/end to remove transient resp
+			stream.decimate(decfactor, no_filter=True, strict_length=False)	
 
 			# Filter stream based on channel (remove sensitivity) 
 			if filtertype == "bandpass":
-				print "Bandpass filter: %.2f-%.2fHz" % (bplowerfreq, bpupperfreq)
-				print "Sensitivity: %.4f" % s
+				print "Bandpass filter: %.3f-%.3fHz" % (bplowerfreq, bpupperfreq)
 				maxval = np.amax(stream[0].data) 
-				print "maxval(st) = %.4f" % maxval
-				print "st[1001] = %.4f" % stream[0][1001]
 				stream.filter(filtertype, freqmin=bplowerfreq,
 					freqmax=bpupperfreq, corners=4)	# bp filter 
-				print "flt(st[1001]) = %.4f" % stream[0][1001]
 				stream[0].data = stream[0].data / s
-				print "flt(str[1001])/s = %.4g" % stream[0][1001]
 			elif filtertype == "lowpass":
 				print "Lowpass filter: %.2f" % lpfreq
 				stream.filter(filtertype, freq=lpfreq, corners=4) # lp filter 
@@ -194,7 +191,6 @@ class ParallelDeconvFilter(object):
 		try:
 			self.poolpid = os.getpid()
 			self.poolname = "deconvFilter()"
-			#print "pool PID:	" + str(self.poolpid) + "\n"
 			flt_streams = pool.map(unwrap_self_deconvFilter,
 				zip([self]*streamlen, stream, response))
 			pool.close()
