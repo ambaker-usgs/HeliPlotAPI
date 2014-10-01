@@ -53,8 +53,8 @@ if __name__ == '__main__':
 	pars = parseConfig.ParseConfig()	# initialize parser object
 	t1 = time.time()	
 	pars.setStationData()
-	timeargs = {'year': 2014, 'month': 8, 'day': 25, 'hour': 3,
-			'minute': 20, 'second': 0, 'microsecond': 0}
+	timeargs = {'year': 2014, 'month': 9, 'day': 03, 'hour': 12,
+			'minute': 00, 'second': 0, 'microsecond': 0}
 	#pars.setExecTime(**timeargs)
 	pars.setExecTime()
 	t2 = time.time()	

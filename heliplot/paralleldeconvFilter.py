@@ -173,12 +173,12 @@ class ParallelDeconvFilter(object):
 		self.VHZfiltertype = VHZfiltertype
 		self.VHZlpfreq = VHZlpfreq
 
+		# Merge traces to eliminate small data lengths, 
+		# method 0 => no overlap of traces (i.e. overwriting
+		# of previous trace data, gaps fill overlaps)
+		# method 1 => fill overlaps using interpolation for
+		# values between both vectors for x num of samples
 		for i in range(streamlen):
-			# Merge traces to eliminate small data lengths, 
-			# method 0 => no overlap of traces (i.e. overwriting
-			# of previous trace data, gaps fill overlaps)
-			# method 1 => fill overlaps using interpolation for
-			# values between both vectors for x num of samples
 			stream[i].merge(method=1, fill_value='interpolate',
 				interpolation_samples=100)
 
