@@ -114,6 +114,7 @@ class ParallelPlotVelocity(object):
 			plt.yticks(posilist, timelist, fontsize=9)	# times in position
 			#dpi=self.pix, size=(self.resx,self.resy))
 			plt.savefig(stationName+"."+self.imgformat)
+			plt.close(dpl)	
 			print	
 		except KeyboardInterrupt:
 			print "KeyboardInterrupt plotVelocity(): terminate workers..."

@@ -161,7 +161,6 @@ if __name__ == '__main__':
 	# ----------------------------------	
 	thm = createThumbnails.CreateThumbnails()
 	t1 = time.time()
-	print "parseConfig home directory = " + str(pars.home)	
 	thmargs = {'thumbpath': pars.thumbpath, 'plotspath': pars.plotspath,
 			'thumbscale': pars.thumbscale}	
 	thm.convertImage(**thmargs)

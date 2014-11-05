@@ -79,9 +79,9 @@ class ParallelDeconvFilter(object):
 			self.parentpid = os.getppid()
 			self.childpid = os.getpid()
 			self.gchildpid = subproc.pid
-			print "parent pid: " + str(self.parentpid)
-			print "child  pid: " + str(self.childpid)
-			print "gchild pid: " + str(self.gchildpid)
+			#print "parent pid: " + str(self.parentpid)
+			#print "child  pid: " + str(self.childpid)
+			#print "gchild pid: " + str(self.gchildpid)
 
 			# Pull sensitivity from subproc
 			tmps = out.strip()
@@ -99,7 +99,7 @@ class ParallelDeconvFilter(object):
 			# Remove transient response and decimate signals to SR=1Hz 
 			decfactor = int(stream[0].stats.sampling_rate)
 			stream.detrend('demean')	# removes mean in data set
-			stream.taper(p=0.01)	# cos tapers beginning/end to remove transient resp
+			stream.taper(max_percentage=0.01/2.0, type='cosine')	# cos tapers beginning/end to remove transient resp
 			stream.decimate(decfactor, no_filter=True, strict_length=False)	
 
 			# Filter stream based on channel (remove sensitivity) 
