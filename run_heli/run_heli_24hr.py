@@ -9,7 +9,6 @@
 # each operable station
 # --------------------------------------------------
 # Methods:
-#	* gifConvert() - Not currently used
 #	* readImages() 
 #	* heliHTML()
 # --------------------------------------------------
@@ -31,24 +30,25 @@ class run_heli_24hr(object):
 						self.plotspath = str(newline[1].strip())
 					elif "stationnames" in newline[0]:
 						self.stationnames = str(newline[1].strip())
-					elif "gifconvert" in newline[0]:
-						self.gifconvert = str(newline[1].strip())
 					elif "nodata" in newline[0]:
 						self.nodata = str(newline[1].strip())
 					elif "helihtml" in newline[0]:
 						self.helihtml = str(newline[1].strip())
+					elif "sitespath" in newline[0]:
+						self.sitespath = str(newline[1].strip())
 
 		print "\nOutput plots path: " + str(self.plotspath)
-		print "Heli plots html path: " + str(self.helihtml)
+		print "Heli html path: " + str(self.helihtml)
+		print "Heli sites path: " + str(self.sitespath)
 
 		# --------------------------------------------	
 		# Open and read list of stations/locations
 		# --------------------------------------------	
 		self.home = os.getcwd()		# current home directory ../HeliPlotAPI
-		self.stations = []		# list of stations
+		self.stations = []		# list of all stations
 		self.locations = {}		# dict for station locations (arranged by station)
-		self.gifstations = []		# list of stations from OutputPlots
 		self.heliplots = {}		# dict of heliplots for each station
+		self.pngstations = []		# list of png station images
 		self.missingstations = []	# missing stations from HeliPlots output
 
 		fin = open(self.stationnames, 'r')
@@ -68,32 +68,6 @@ class run_heli_24hr(object):
 					elif count > 2:
 						break
 
-	def gifConvert(self):
-		# --------------------------------------------	
-		# Converts .jpg files produced by HeliPlot to 
-		# .gif files to be used for the LISS HTML
-		# --------------------------------------------	
-		print "\nConverting images from .jpg to .gif..."	
-		filelist = sorted(os.listdir(self.plotspath))
-		filelen = len(filelist)
-		JPGFLAG = False
-		if filelen != 0:
-			for i in range(filelen):
-				if ".jpg" in filelist[i]:
-					JPGFLAG = True
-					try:
-						os.chdir(self.plotspath)
-						process = subprocess.Popen([self.gifconvert], stderr=subprocess.PIPE, shell=True)
-						(out, err) = process.communicate()
-					except Exception as e:
-						print "*****Exception found = " + str(e)
-				else:
-					JPGFLAG = False
-			if not JPGFLAG:
-				print "****ALL *.JPG CONVERTED to *.GIF****\n"
-		else:
-			print "****NO FILES PRESENT IN HELIPLOTS DIR****\n"
-
 	def readImages(self):
 		# -------------------------------	
 		# Read in images from HeliPlots
@@ -104,11 +78,11 @@ class run_heli_24hr(object):
 		if filelen != 0:
 			for i in range(filelen):
 				tmp = re.split('\\.', filelist[i])
-				self.gifstations.append(tmp[1].strip())		# only get locations for stations that exist for HeliPlots
+				self.pngstations.append(tmp[1].strip())		# only get locations for stations that exist for HeliPlots
 				self.heliplots[tmp[1].strip()] = filelist[i]	# corresponding HeliPlot for each station
 
 		for i in range(len(self.stations)):
-			if not self.stations[i] in self.gifstations:
+			if not self.stations[i] in self.pngstations:
 				self.missingstations.append(self.stations[i])	# store missing stations
 		print "****Missing station data****"
 		print self.missingstations
@@ -116,7 +90,7 @@ class run_heli_24hr(object):
 	def heliHTML(self):
 		# -------------------------------------------------	
 		# Create HTML files for each station HeliPlot
-		# contained in the self.gifstations list, the
+		# contained in the self.pngstations list, the
 		# locations associated with each of these stations
 		# is contained within the self.locations dict
 		# -------------------------------------------------	
@@ -124,7 +98,7 @@ class run_heli_24hr(object):
 		
 		# Get MST/GMT date/times from system
 		os.chdir(self.helihtml)
-		htmlfiles = glob.glob(self.helihtml+"*")
+		htmlfiles = glob.glob(self.helihtml+"*.html")
 		for f in htmlfiles:
 			os.remove(f)	# remove tmp html files from HeliHTML dir
 		try:
@@ -166,13 +140,13 @@ class run_heli_24hr(object):
 			if NODATAFLG:
 				html.write("\t\t<CENTER><img src=" + '"' + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
 			else:
-				html.write("\t\t<CENTER><img src=" + '"' + self.plotspath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
+				#html.write("\t\t<CENTER><img src=" + '"' + self.plotspath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
+				html.write("\t\t<CENTER><img src=" + '"' + self.sitespath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")	
 			html.write("\t\t<p align=" + '"' + align + '"' + ">\n")
 			html.write("\t</body>\n")
 			html.write("</html>")
 
 if __name__ == '__main__':
 	heli = run_heli_24hr()
-	#heli.gifConvert()
 	heli.readImages()
 	heli.heliHTML()
