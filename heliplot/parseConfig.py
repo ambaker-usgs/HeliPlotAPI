@@ -41,12 +41,29 @@ class ParseConfig(object):
 			self.stationinfo.append(tmpstation[0].strip())
 			self.stationlocation.append(tmpstation[1].strip())
 
-		# Split/store magnification exception list
-		tmpmag = re.split(',', self.magnificationexc)
-		self.magnificationexc = {}
-		for i in range(len(tmpmag)):
-			tmpexc = re.split(':', tmpmag[i])
-			self.magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
+		# Split/store network filter exceptions list 
+		tmpnetfilt = re.split(',', self.net_filterexc)
+		self.net_filterexc = {}
+		for i in range(len(tmpnetfilt)):
+			tmpnetfilt[i] = tmpnetfilt[i].strip();
+			tmpexc = re.split(':', tmpnetfilt[i])
+			self.net_filterexc[tmpexc[0].strip()] = str(tmpexc[1].strip())
+
+		# Split/store network magnification exceptions list
+		tmpnetmag = re.split(',', self.net_magnificationexc)
+		self.net_magnificationexc = {}
+		for i in range(len(tmpnetmag)):
+			tmpnetmag[i] = tmpnetmag[i].strip();
+			tmpexc = re.split(':', tmpnetmag[i])
+			self.net_magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
+		
+		# Split/store station magnification exceptions list 
+		tmpstatmag = re.split(',', self.stat_magnificationexc)
+		self.stat_magnificationexc = {}	
+		for i in range(len(tmpstatmag)):
+			tmpstatmag[i] = tmpstatmag[i].strip();	
+			tmpexc = re.split(':', tmpstatmag[i])
+			self.stat_magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
 
 	def setExecTime(self, **kwargs): 	
 		# ----------------------------------------------------	
@@ -154,24 +171,34 @@ class ParseConfig(object):
 						self.EHZfiltertype = str(newline[0].strip())
 					elif "EHZ highpass" in newline[1]:
 						self.EHZhpfreq = float(newline[0].strip())
-					elif "EHZ notch" in newline[1]:
-						self.EHZnotchfreq = float(newline[0].strip())
 					elif "BHZ filter" in newline[1]:
 						self.BHZfiltertype = str(newline[0].strip())
 					elif "BHZ bplower" in newline[1]:
 						self.BHZbplowerfreq = float(newline[0].strip())
 					elif "BHZ bpupper" in newline[1]:
 						self.BHZbpupperfreq = float(newline[0].strip())
+					elif "BHZ notchlower" in newline[1]:
+						self.BHZnotchlowerfreq = float(newline[0].strip())
+					elif "BHZ notchupper" in newline[1]:
+						self.BHZnotchupperfreq = float(newline[0].strip())
 					elif "LHZ filter" in newline[1]:
 						self.LHZfiltertype = str(newline[0].strip())
 					elif "LHZ bplower" in newline[1]:
 						self.LHZbplowerfreq = float(newline[0].strip())
 					elif "LHZ bpupper" in newline[1]:
 						self.LHZbpupperfreq = float(newline[0].strip())
+					elif "LHZ notchlower" in newline[1]:
+						self.LHZnotchlowerfreq = float(newline[0].strip())
+					elif "LHZ notchupper" in newline[1]:
+						self.LHZnotchupperfreq = float(newline[0].strip())
 					elif "VHZ filter" in newline[1]:
 						self.VHZfiltertype = str(newline[0].strip())
 					elif "VHZ lowpass" in newline[1]:
 						self.VHZlpfreq = float(newline[0].strip())	
-					elif "magnification exceptions" in newline[1]:
-						self.magnificationexc = newline[0].strip()
+					elif "network filter exceptions" in newline[1]:
+						self.net_filterexc = newline[0].strip()
+					elif "network magnification exceptions" in newline[1]:
+						self.net_magnificationexc = newline[0].strip()
+					elif "station magnification exceptions" in newline[1]:
+						self.stat_magnificationexc = newline[0].strip()
 		fin.close()	# close station.cfg

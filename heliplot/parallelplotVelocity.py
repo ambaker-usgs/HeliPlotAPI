@@ -32,35 +32,30 @@ class ParallelPlotVelocity(object):
 		# Initializes kill object for pool
 		self.killproc = Kill()
 
-	def plotVelocity(self, stream, stationName):
+	def plotVelocity(self, stream, stationName, filters):
 		# --------------------------------	
 		# Plots filtered/magnified streams	
 		# --------------------------------	
 		try:
 			print "Plotting velocity data for station: " + str(stationName)
-			magnification = self.magnification[stream[0].getId()]	# magnification for station[i]
+			streamID = stream[0].getId()	
+			magnification = self.magnification[streamID] # magnification for station[i]
 			trspacing = self.vertrange/magnification * 1000.0	# trace spacing
-			tmpstr = re.split("\\.", stream[0].getId())
-			namechan = tmpstr[3].strip()
-			if namechan == "EHZ":
-				filtertype = self.EHZfiltertype
-				hpfreq = self.EHZhpfreq
-				notchfreq = self.EHZnotchfreq
-				bounds = str(hpfreq)
-			elif namechan == "BHZ":
-				filtertype = self.BHZfiltertype
-				bplowerfreq = self.BHZbplowerfreq
-				bpupperfreq = self.BHZbpupperfreq
-				bounds = str(bplowerfreq) + "-" + str(bpupperfreq)
-			elif namechan == "LHZ":
-				filtertype = self.LHZfiltertype
-				bplowerfreq = self.LHZbplowerfreq
-				bpupperfreq = self.LHZbpupperfreq
-				bounds = str(bplowerfreq) + "-" + str(bpupperfreq)
-			elif namechan == "VHZ":
-				filtertype = self.VHZfiltertype
-				lpfreq = self.VHZlpfreq
-				bounds = str(lpfreq)
+			# Get filter coefficients for every station	
+			if streamID in filters['streamID']:
+				filtertype = filters['filtertype']
+				freqX = filters['freqX']
+				freqY = filters['freqY']
+			
+				# set bounds x-label
+				if filtertype == "highpass":
+					bounds = str(freqX)
+				elif filtertype == "bandpass":
+					bounds = str(freqX) + "-" + str(freqY)	
+				elif filtertype == "bandstop":
+					bounds = str(freqX) + "-" + str(freqY)	
+				elif filtertype == "lowpass":
+					bounds = str(freqX)
 
 			# pass explicit figure instance to set correct title and attributes
 			dpl = plt.figure()
@@ -86,7 +81,7 @@ class ParallelPlotVelocity(object):
 				dpi=self.pix, title_size=-1)
 
 			# set title, x/y labels and tick marks
-			plt.title(stream[0].getId() + "  " + "Start: " + 
+			plt.title(streamID + "  " + "Start: " + 
 				str(titlestartTime), fontsize=12)
 			plt.xlabel('Time [m]\n(%s: %sHz  Trace Spacing: %.2e mm/s)' %
 				(str(filtertype), str(bounds), trspacing), fontsize=10)
@@ -124,13 +119,10 @@ class ParallelPlotVelocity(object):
 			print "UnknownException plotVelocity(): " + str(e)
 			return
 
-	def launchWorkers(self, streams, plotspath, stationName, 
+	def launchWorkers(self, streams, plotspath, stationName,
 			  magnification, vertrange, datetimePlotstart,
 			  datetimePlotend, resx, resy, pix, imgformat,
-			  EHZfiltertype, EHZhpfreq, EHZnotchfreq, 
-			  BHZfiltertype, BHZbplowerfreq, BHZbpupperfreq, 
-			  LHZfiltertype, LHZbplowerfreq, LHZbpupperfreq, 
-			  VHZfiltertype, VHZlpfreq):
+			  filters):
 		# ------------------------	
 		# Pool of plotting workers	
 		# ------------------------	
@@ -143,17 +135,7 @@ class ParallelPlotVelocity(object):
 		self.resy = resy
 		self.pix = pix
 		self.imgformat = imgformat	
-		self.EHZfiltertype = EHZfiltertype
-		self.EHZhpfreq = EHZhpfreq
-		self.EHZnotchfreq = EHZnotchfreq
-		self.BHZfiltertype = BHZfiltertype
-		self.BHZbplowerfreq = BHZbplowerfreq
-		self.BHZbpupperfreq = BHZbpupperfreq
-		self.LHZfiltertype = LHZfiltertype
-		self.LHZbplowerfreq = LHZbplowerfreq
-		self.LHZbpupperfreq = LHZbpupperfreq
-		self.VHZfiltertype = VHZfiltertype
-		self.VHZlpfreq = VHZlpfreq
+
 		streamlen = len(streams)	
 		# clear output plots dir
 		os.chdir(plotspath)
@@ -171,7 +153,7 @@ class ParallelPlotVelocity(object):
 			self.poolname = "plotVelocity()"
 			#print "pool PID:	" + str(self.poolpid) + "\n"
 			pool.map(unwrap_self_plotVelocity, zip([self]*streamlen,
-				streams, stationName))	# thread plots
+				streams, stationName, filters))	# thread plots
 			pool.close()
 			pool.join()
 			print "------plotVelocity() Pool Complete------\n\n"

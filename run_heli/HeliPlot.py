@@ -53,10 +53,10 @@ if __name__ == '__main__':
 	pars = parseConfig.ParseConfig()	# initialize parser object
 	t1 = time.time()	
 	pars.setStationData()
-	timeargs = {'year': 2014, 'month': 9, 'day': 03, 'hour': 12,
-			'minute': 00, 'second': 0, 'microsecond': 0}
-	#pars.setExecTime(**timeargs)
-	pars.setExecTime()
+	timeargs = {'year': 2014, 'month': 12, 'day': 8, 'hour': 23,
+			'minute': 59, 'second': 0, 'microsecond': 0}
+	pars.setExecTime(**timeargs)
+	#pars.setExecTime()
 	t2 = time.time()	
 	timelenparse = t2 - t1
 	keys.append('parse')	
@@ -91,12 +91,28 @@ if __name__ == '__main__':
 	
 	# ----------------------------------------------------	
 	# Pull freq responses from queried stations and store
+	# also store station filter types	
 	# ----------------------------------------------------	
 	resp = freqResponse.FreqResponse()
 	t1 = time.time()	
 	respargs = {'resppath': pars.resppath, 'stream': strm.stream, 
 			'filelist': strm.filelist, 'streamlen': strm.streamlen, 
-			'datetimeUTC': pars.datetimeUTC} 
+			'datetimeUTC': pars.datetimeUTC,
+			'EHZfiltertype': pars.EHZfiltertype,
+			'EHZhpfreq': pars.EHZhpfreq,
+			'BHZfiltertype': pars.BHZfiltertype,
+			'BHZbplowerfreq': pars.BHZbplowerfreq,
+			'BHZbpupperfreq': pars.BHZbpupperfreq,
+			'BHZnotchlowerfreq': pars.BHZnotchlowerfreq,
+			'BHZnotchupperfreq': pars.BHZnotchupperfreq,
+			'LHZfiltertype': pars.LHZfiltertype,
+			'LHZbplowerfreq': pars.LHZbplowerfreq,
+			'LHZbpupperfreq': pars.LHZbpupperfreq,
+			'LHZnotchlowerfreq': pars.LHZnotchlowerfreq,
+			'LHZnotchupperfreq': pars.LHZnotchupperfreq,
+			'VHZfiltertype': pars.VHZfiltertype,
+			'VHZlpfreq': pars.VHZlpfreq,
+			'net_filterexc': pars.net_filterexc}
 	resp.storeResps(**respargs)
 	t2 = time.time()
 	timelenresp = t2 - t1
@@ -109,12 +125,7 @@ if __name__ == '__main__':
 	fltr = paralleldeconvFilter.ParallelDeconvFilter()
 	t1 = time.time()	
 	fltrargs = {'stream': resp.stream, 'streamlen': resp.streamlen,
-			'response': resp.resp, 'EHZfiltertype': pars.EHZfiltertype,
-			'EHZhpfreq': pars.EHZhpfreq, 'EHZnotchfreq': pars.EHZnotchfreq,
-			'BHZfiltertype': pars.BHZfiltertype, 'BHZbplowerfreq': pars.BHZbplowerfreq,
-			'BHZbpupperfreq': pars.BHZbpupperfreq, 'LHZfiltertype': pars.LHZfiltertype,
-			'LHZbplowerfreq': pars.LHZbplowerfreq, 'LHZbpupperfreq': pars.LHZbpupperfreq,
-			'VHZfiltertype': pars.VHZfiltertype, 'VHZlpfreq': pars.VHZlpfreq}
+			'response': resp.resp, 'filters': resp.filtertype}
 	fltr.launchWorkers(**fltrargs)
 	t2 = time.time()
 	timelendeconv = t2 - t1
@@ -126,8 +137,10 @@ if __name__ == '__main__':
 	# -------------------	
 	mag = magnifyData.MagnifyData()
 	t1 = time.time()	
-	magargs = {'flt_streams': fltr.flt_streams, 'magnificationexc': pars.magnificationexc,
-			'magnification_default': pars.magnification_default}
+	magargs = {'flt_streams': fltr.flt_streams,
+		'net_magnificationexc': pars.net_magnificationexc,
+		'stat_magnificationexc': pars.stat_magnificationexc,
+		'magnification_default': pars.magnification_default}
 	magnified_streams = mag.magnify(**magargs)
 	t2 = time.time()
 	timelenmagnify = t2 - t1
@@ -140,16 +153,14 @@ if __name__ == '__main__':
 	plt = parallelplotVelocity.ParallelPlotVelocity()
 	t1 = time.time()	
 	pltargs = {'streams': magnified_streams, 'plotspath': pars.plotspath,
-			'stationName': resp.stationName, 'magnification': mag.magnification,
-			'vertrange': pars.vertrange, 'datetimePlotstart': pars.datetimePlotstart, 
-			'datetimePlotend': pars.datetimePlotend, 'resx': pars.resx, 
-			'resy': pars.resy, 'pix': pars.pix, 'imgformat': pars.imgformat,
-			'EHZfiltertype': pars.EHZfiltertype, 'EHZhpfreq': pars.EHZhpfreq, 
-			'EHZnotchfreq': pars.EHZnotchfreq, 'BHZfiltertype': pars.BHZfiltertype, 
-			'BHZbplowerfreq': pars.BHZbplowerfreq, 'BHZbpupperfreq': pars.BHZbpupperfreq, 
-			'LHZfiltertype': pars.LHZfiltertype, 'LHZbplowerfreq': pars.LHZbplowerfreq, 
-			'LHZbpupperfreq': pars.LHZbpupperfreq, 'VHZfiltertype': pars.VHZfiltertype, 
-			'VHZlpfreq': pars.VHZlpfreq}
+			'stationName': resp.stationName,
+			'magnification': mag.magnification,
+			'vertrange': pars.vertrange,
+			'datetimePlotstart': pars.datetimePlotstart,
+			'datetimePlotend': pars.datetimePlotend,
+			'resx': pars.resx, 'resy': pars.resy, 'pix': pars.pix,
+			'imgformat': pars.imgformat,
+			'filters': resp.filtertype}
 	plt.launchWorkers(**pltargs)
 	t2 = time.time()
 	timelenplot = t2 - t1

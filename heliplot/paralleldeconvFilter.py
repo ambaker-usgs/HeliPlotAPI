@@ -35,41 +35,32 @@ class ParallelDeconvFilter(object):
 		# Initialize kill object for class
 		self.killproc = Kill()
 
-	def deconvFilter(self, stream, response):
+	def deconvFilter(self, stream, response, filters):
 		# ----------------------------------------
 		# Deconvolve/filter each station, filters
 		# are based on channel IDs	
 		# ----------------------------------------
-		tmpstr = re.split("\\.", stream[0].getId())
-		namestr = tmpstr[1].strip()
-		nameloc = tmpstr[2].strip()
-		namechan = tmpstr[3].strip()
-		nameres = response['filename'].strip()
-		if namechan == "EHZ":
-			filtertype = self.EHZfiltertype
-			hpfreq = self.EHZhpfreq
-			notchfreq = self.EHZnotchfreq	# notch fltr will be implemented later
-		elif namechan == "BHZ":
-			filtertype = self.BHZfiltertype
-			bplowerfreq = self.BHZbplowerfreq
-			bpupperfreq = self.BHZbpupperfreq
-		elif namechan == "LHZ":
-			filtertype = self.LHZfiltertype
-			bplowerfreq = self.LHZbplowerfreq
-			bpupperfreq = self.LHZbpupperfreq
-		elif namechan == "VHZ":
-			filtertype = self.VHZfiltertype
-			lpfreq = self.VHZlpfreq
+		streamID = stream[0].getId()	
+		tmpstr = re.split("\\.", streamID) 
+		networkID = tmpstr[0].strip()	
+		stationID = tmpstr[1].strip()
+		respID = response['filename'].strip()
+		netstatID = networkID + stationID 
+	
+		# Get filter types from filters[{},{},...]
+		if streamID in filters['streamID']:
+			filtertype = filters['filtertype']
+			freqX = filters['freqX']
+			freqY = filters['freqY']
 
 		# Try/catch block for sensitivity subprocess
 		try:
-			print "Filter stream " + namestr + " and response " + nameres
-			print namechan + " filtertype = " + str(filtertype)
+			print "Stream/Filter: " + netstatID + " / " + str(filtertype) 
 
 			# Deconvolution (removes sensitivity)
 			sensitivity = "Sensitivity:"	# pull sensitivity from RESP file
 			grepSensitivity = ("grep " + '"' + sensitivity + '"' + " " +
-				nameres + " | tail -1")
+				respID + " | tail -1")
 			self.subprocess = True	# flag for exceptions (if !subprocess return)
 			subproc = subprocess.Popen([grepSensitivity], stdout=subprocess.PIPE,
 				stderr=subprocess.PIPE, shell=True)
@@ -79,15 +70,11 @@ class ParallelDeconvFilter(object):
 			self.parentpid = os.getppid()
 			self.childpid = os.getpid()
 			self.gchildpid = subproc.pid
-			#print "parent pid: " + str(self.parentpid)
-			#print "child  pid: " + str(self.childpid)
-			#print "gchild pid: " + str(self.gchildpid)
 
 			# Pull sensitivity from subproc
 			tmps = out.strip()
 			tmps = re.split(':', tmps)
 			s = float(tmps[1].strip())
-			#print "sensitivity: " + str(s)
 			sys.stdout.flush()
 			sys.stderr.flush()
 			self.subprocess = False	# subprocess finished
@@ -104,18 +91,24 @@ class ParallelDeconvFilter(object):
 
 			# Filter stream based on channel (remove sensitivity) 
 			if filtertype == "bandpass":
-				print "Bandpass filter: %.3f-%.3fHz" % (bplowerfreq, bpupperfreq)
+				print "Bandpass filter: %.3f-%.3fHz" % (freqX, freqY)
 				maxval = np.amax(stream[0].data) 
-				stream.filter(filtertype, freqmin=bplowerfreq,
-					freqmax=bpupperfreq, corners=4)	# bp filter 
+				stream.filter(filtertype, freqmin=freqX,
+					freqmax=freqY, corners=4)	# bp filter 
+				stream[0].data = stream[0].data / s
+			elif filtertype == "bandstop":
+				print "Bandstop filter: %.3f-%.3fHz" % (freqX, freqY)
+				maxval = np.amax(stream[0].data)
+				stream.filter(filtertype, freqmin=freqX,
+					freqmax=freqY, corners=4)	# notch filter
 				stream[0].data = stream[0].data / s
 			elif filtertype == "lowpass":
-				print "Lowpass filter: %.2f" % lpfreq
-				stream.filter(filtertype, freq=lpfreq, corners=4) # lp filter 
+				print "Lowpass filter: %.2f" % freqX 
+				stream.filter(filtertype, freq=freqX, corners=4) # lp filter 
 				stream[0].data = stream[0].data / s
 			elif filtertype == "highpass":
-				print "Highpass filter: %.2f" % hpfreq
-				stream.filter(filtertype, freq=hpfreq, corners=4) # hp filter
+				print "Highpass filter: %.2f" % freqX 
+				stream.filter(filtertype, freq=freqX, corners=4) # hp filter
 				stream[0].data = stream[0].data / s
 			print "Filtered stream: " + str(stream) + "\n"
 			return stream
@@ -151,28 +144,11 @@ class ParallelDeconvFilter(object):
 				self.killproc.killSubprocess(**killargs)
 			return
 
-	def launchWorkers(self, stream, streamlen, response,
-			  EHZfiltertype, EHZhpfreq, EHZnotchfreq,
-			  BHZfiltertype, BHZbplowerfreq, BHZbpupperfreq,
-			  LHZfiltertype, LHZbplowerfreq, LHZbpupperfreq,
-			  VHZfiltertype, VHZlpfreq):
+	def launchWorkers(self, stream, streamlen, response, filters):
 		# ---------------------------------
 		# Simulate/filter queried stations
 		# ---------------------------------
 		print "-------deconvFilter() Pool-------\n"
-		# initialize vars
-		self.EHZfiltertype = EHZfiltertype
-		self.EHZhpfreq = EHZhpfreq
-		self.EHZnotchfreq = EHZnotchfreq
-		self.BHZfiltertype = BHZfiltertype
-		self.BHZbplowerfreq = BHZbplowerfreq
-		self.BHZbpupperfreq = BHZbpupperfreq
-		self.LHZfiltertype = LHZfiltertype
-		self.LHZbplowerfreq = LHZbplowerfreq
-		self.LHZbpupperfreq = LHZbpupperfreq
-		self.VHZfiltertype = VHZfiltertype
-		self.VHZlpfreq = VHZlpfreq
-
 		# Merge traces to eliminate small data lengths, 
 		# method 0 => no overlap of traces (i.e. overwriting
 		# of previous trace data, gaps fill overlaps)
@@ -187,12 +163,13 @@ class ParallelDeconvFilter(object):
 		PROCESSES = multiprocessing.cpu_count()
 		print "PROCESSES:	" + str(PROCESSES)
 		print "streamlen:	" + str(streamlen) + "\n"	
+
 		pool = multiprocessing.Pool(PROCESSES)
 		try:
 			self.poolpid = os.getpid()
 			self.poolname = "deconvFilter()"
 			flt_streams = pool.map(unwrap_self_deconvFilter,
-				zip([self]*streamlen, stream, response))
+				zip([self]*streamlen, stream, response, filters))
 			pool.close()
 			pool.join()
 			self.flt_streams = flt_streams

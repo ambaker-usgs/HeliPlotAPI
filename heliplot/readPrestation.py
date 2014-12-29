@@ -26,6 +26,7 @@ class ReadPrestation(object):
 		#os.chdir('/home/asluser/HeliPlotAPI/')	
 		home = os.getcwd()	
 		os.chdir(home)	
+		self.networks = []	# list of networks	
 		self.stations = []	# list of stations
 		self.stationlist = []	# list for edited station names
 		self.locations = []	# list of locations for each station
@@ -40,8 +41,10 @@ class ReadPrestation(object):
 					if count == 2:
 						station = line[0:i].strip()
 						station = station.replace(" ", "")
+						network = station[0:2]	
 						location = line[i:len(line)].strip()
 						self.stations.append(station)
+						self.networks.append(network)	
 						self.locations.append(location)
 					elif count > 2:
 						break
@@ -52,16 +55,23 @@ class ReadPrestation(object):
 		# Store station names
 		# --------------------
 		stationlen = len(self.stations)
+		networklen = len(self.networks)
+		
+		# Parse and store exception lists
 		for i in range(stationlen):
 			stringlen = len(self.stations[i])
 			
-			# Channel/location IDs for station exceptions
-			if self.channelexc.has_key(self.stations[i]) == 1:
-				channelID = self.channelexc[self.stations[i]]
+			# Channel IDs for network/station exceptions
+			if self.station_channelexc.has_key(self.stations[i]) == 1:
+				channelID = self.station_channelexc[self.stations[i]]
+			elif self.network_channelexc.has_key(self.networks[i]) == 1:
+				channelID = self.network_channelexc[self.networks[i]]
 			else:
 				channelID = self.channelID
-			if self.locationexc.has_key(self.stations[i]) == 1:
-				locationID = self.locationexc[self.stations[i]]
+
+			# Location ID for station exceptions
+			if self.station_locationexc.has_key(self.stations[i]) == 1:
+				locationID = self.station_locationexc[self.stations[i]]
 			else:
 				locationID = self.locationID
 			
@@ -139,25 +149,30 @@ class ReadPrestation(object):
 
 		# EHZ Filter Design
 		cfgout.write(self.EHZfiltertype + "\t" + self.EHZfiltertypecmt + "\n")
-		cfgout.write(self.EHZhpfreq + "\t" + self.EHZhpfreqcmt + "\n")
-		cfgout.write(self.EHZnotchfreq + "\t" + self.EHZnotchfreqcmt + "\n\n")
+		cfgout.write(self.EHZhpfreq + "\t" + self.EHZhpfreqcmt + "\n\n")
 
 		# BHZ Filter Design
 		cfgout.write(self.BHZfiltertype + "\t" + self.BHZfiltertypecmt + "\n")
 		cfgout.write(self.BHZbplowerfreq + "\t" + self.BHZbplowerfreqcmt + "\n")
-		cfgout.write(self.BHZbpupperfreq + "\t" + self.BHZbpupperfreqcmt + "\n\n")
+		cfgout.write(self.BHZbpupperfreq + "\t" + self.BHZbpupperfreqcmt + "\n")
+		cfgout.write(self.BHZnotchlowerfreq + "\t" + self.BHZnotchlowerfreqcmt + "\n")
+		cfgout.write(self.BHZnotchupperfreq + "\t" + self.BHZnotchupperfreqcmt + "\n\n")
 
 		# LHZ Filter Design
 		cfgout.write(self.LHZfiltertype + "\t" + self.LHZfiltertypecmt + "\n")
 		cfgout.write(self.LHZbplowerfreq + "\t" + self.LHZbplowerfreqcmt + "\n")
-		cfgout.write(self.LHZbpupperfreq + "\t" + self.LHZbpupperfreqcmt + "\n\n")
+		cfgout.write(self.LHZbpupperfreq + "\t" + self.LHZbpupperfreqcmt + "\n")
+		cfgout.write(self.LHZnotchlowerfreq + "\t" + self.LHZnotchlowerfreqcmt + "\n")
+		cfgout.write(self.LHZnotchupperfreq + "\t" + self.LHZnotchupperfreqcmt + "\n\n")
 
 		# VHZ Filter Design
 		cfgout.write(self.VHZfiltertype + "\t" + self.VHZfiltertypecmt + "\n")
 		cfgout.write(self.VHZlpfreq + "\t" + self.VHZlpfreqcmt + "\n\n")
 
-		# Write magnification exception list for specific stations
-		cfgout.write(str(self.magnificationexc) + "\t" + self.magnificationexccmt + "\n\n")
+		# Write filter and magnification exception lists 
+		cfgout.write(str(self.network_filterexc) + "\t" + self.network_filterexccmt + "\n")	
+		cfgout.write(str(self.network_magnificationexc) + "\t" + self.network_magnificationexccmt + "\n")	
+		cfgout.write(str(self.station_magnificationexc) + "\t" + self.station_magnificationexccmt + "\n\n")
 
 	def writeStations(self):
 		print "writeStations()\n"
@@ -233,20 +248,26 @@ class ReadPrestation(object):
 						self.EHZfiltertype = newline[1].strip()
 					elif "EHZhpfreq" in newline[0]:
 						self.EHZhpfreq = newline[1].strip()
-					elif "EHZnotchfreq" in newline[0]:
-						self.EHZnotchfreq = newline[1].strip()
 					elif "BHZfiltertype" in newline[0]:
 						self.BHZfiltertype = newline[1].strip()
 					elif "BHZbplowerfreq" in newline[0]:
 						self.BHZbplowerfreq = newline[1].strip()
 					elif "BHZbpupperfreq" in newline[0]:
 						self.BHZbpupperfreq = newline[1].strip()
+					elif "BHZnotchlowerfreq" in newline[0]:	
+						self.BHZnotchlowerfreq = newline[1].strip()	
+					elif "BHZnotchupperfreq" in newline[0]:
+						self.BHZnotchupperfreq = newline[1].strip()
 					elif "LHZfiltertype" in newline[0]:
 						self.LHZfiltertype = newline[1].strip()
 					elif "LHZbplowerfreq" in newline[0]:
 						self.LHZbplowerfreq = newline[1].strip()
 					elif "LHZbpupperfreq" in newline[0]:
 						self.LHZbpupperfreq = newline[1].strip()
+					elif "LHZnotchlowerfreq" in newline[0]:
+						self.LHZnotchlowerfreq = newline[1].strip()
+					elif "LHZnotchupperfreq" in newline[0]:
+						self.LHZnotchupperfreq = newline[1].strip()
 					elif "VHZfiltertype" in newline[0]:
 						self.VHZfiltertype = newline[1].strip()
 					elif "VHZlpfreq" in newline[0]:
@@ -254,42 +275,52 @@ class ReadPrestation(object):
 
 					# Exception lists
 					# ---------------------------
-					elif "rmnetwork" in newline[0]:
-						self.rmnetwork = newline[1].strip()
-					elif "channelexc" in newline[0]:
-						self.channelexc = newline[1].strip()
-					elif "locationexc" in newline[0]:
-						self.locationexc = newline[1].strip()
-					elif "magnificationexc" in newline[0]:
-						self.magnificationexc = newline[1].strip()
+					elif "network_channelexc" in newline[0]:
+						self.network_channelexc = newline[1].strip()
+					elif "station_channelexc" in newline[0]:
+						self.station_channelexc = newline[1].strip()
+					elif "station_locationexc" in newline[0]:
+						self.station_locationexc = newline[1].strip()
+					elif "network_filterexc" in newline[0]:
+						self.network_filterexc = newline[1].strip()
+					elif "network_magnificationexc" in newline[0]:
+						self.network_magnificationexc = newline[1].strip()
+					elif "station_magnificationexc" in newline[0]:
+						self.station_magnificationexc = newline[1].strip()
 		fin.close()	# close prestation.cfg
 
-		# Split/store exception channels, locations, magnifications
-		tmpchan = re.split(',', self.channelexc)	# split/store channelexc
-		self.channelexc = {}
-		for i in range(len(tmpchan)):	
-			tmpexc = re.split(':', tmpchan[i])
-			self.channelexc[tmpexc[0].strip()] = tmpexc[1].strip()
+		# Split/store network channel exceptions	
+		tmpnet = re.split(',', self.network_channelexc)	
+		self.network_channelexc = {}
+		for i in range(len(tmpnet)):
+			tmpnet[i] = tmpnet[i].strip()
+			tmpexc = re.split(':', tmpnet[i])
+			netID = tmpexc[0].strip()
+			chanID = tmpexc[1].strip()
+			self.network_channelexc[netID] = chanID
 
-		tmploc = re.split(',', self.locationexc)	# split/store locationexc
-		self.locationexc = {}	
+		# Split/store station channel exceptions 
+		tmpchan = re.split(',', self.station_channelexc)	
+		self.station_channelexc = {}
+		for i in range(len(tmpchan)):	
+			tmpchan[i] = tmpchan[i].strip()	
+			tmpexc = re.split(':', tmpchan[i])
+			netstatID = tmpexc[0].strip()
+			chanID = tmpexc[1].strip()
+			self.station_channelexc[netstatID] = chanID 
+
+		# Split/store station location exceptions 
+		tmploc = re.split(',', self.station_locationexc)	
+		self.station_locationexc = {}	
 		for i in range(len(tmploc)):
 			tmploc[i] = tmploc[i].strip()	
 			tmpexc = re.split(':', tmploc[i])
 			tmpexc[1] = tmpexc[1].strip()
 			if tmpexc[1][0] == '"':	# empty loc codes will be assigned '--'
 				tmpexc[1] = '--'
-			netstatID = tmpexc[0]
-			locationID = tmpexc[1]
-			self.locationexc[netstatID] = locationID
-		
-		'''
-		tmpmag = re.split(',', self.magnificationexc)	# split magnifcation excepts
-		self.magnificationexc = {}
-		for i in range(len(tmpmag)):	# split/store magnificationexc
-			tmpexc = re.split(':', tmpmag[i])
-			self.magnificationexc[tmpexc[0].strip()] = float(tmpexc[1].strip())
-		'''
+			netstatID = tmpexc[0].strip()
+			locationID = tmpexc[1].strip()
+			self.station_locationexc[netstatID] = locationID
 
 		# Comments associated with each var
 		# Default variables	
@@ -317,19 +348,27 @@ class ReadPrestation(object):
 		self.resppathcmt = "# responses path"
 	
 		# Filter designs
-		self.EHZfiltertypecmt = "# EHZ filter type"
+		self.EHZfiltertypecmt = "# EHZ filter type (default)"
 		self.EHZhpfreqcmt = "# EHZ highpass frequency"
-		self.EHZnotchfreqcmt = "# EHZ notch frequency"
-		self.BHZfiltertypecmt = "# BHZ filter type"
+		
+		self.BHZfiltertypecmt = "# BHZ filter type (default)"
 		self.BHZbplowerfreqcmt = "# BHZ bplower freq"
 		self.BHZbpupperfreqcmt = "# BHZ bpupper freq"
-		self.LHZfiltertypecmt = "# LHZ filter type"
+		self.BHZnotchlowerfreqcmt = "# BHZ notchlower freq"
+		self.BHZnotchupperfreqcmt = "# BHZ notchupper freq"
+
+		self.LHZfiltertypecmt = "# LHZ filter type (default)"
 		self.LHZbplowerfreqcmt = "# LHZ bplower freq"
 		self.LHZbpupperfreqcmt = "# LHZ bpupper freq"
-		self.VHZfiltertypecmt = "# VHZ filter type"
+		self.LHZnotchlowerfreqcmt = "# LHZ notchlower freq"
+		self.LHZnotchupperfreqcmt = "# LHZ notchupper freq"
+
+		self.VHZfiltertypecmt = "# VHZ filter type (default)"
 		self.VHZlpfreqcmt = "# VHZ lowpass frequency"
 
 		# Other comments (stations/magnifications/summary)
 		self.stationcmt = "# Station Data"
-		self.magnificationexccmt = "# magnification exceptions list"
+		self.network_filterexccmt = "# network filter exceptions list"
+		self.network_magnificationexccmt = "# network magnification exceptions list"
+		self.station_magnificationexccmt = "# station magnification exceptions list"	
 		self.cfgcmt = "# ---------------------------------------------------\n# Config file is populated by readStations.py\n# station info will be read from station list\n# execution times will depend on cronjob or an\n# external time file that lists times for each station\n# ---------------------------------------------------\n# **NOTE: Each filter design has 4 prefilter corner freqs\n# ---------------------------------------------------\n"
