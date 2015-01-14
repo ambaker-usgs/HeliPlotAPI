@@ -1,5 +1,10 @@
 # This file ignores all compiled python programs
 heliplot/*.pyc
+build
+run_heli/prestation.cfg.ASL
+run_heli/station.cfg.ASL
+run_heli/stationNames.txt.bak
+run_heli/stationNamesBackup.txt
 #prestation.cfg
 #station.cfg
 #run_heli/run_heli.pl

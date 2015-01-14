@@ -12,8 +12,97 @@
 import os, sys, re
 
 class FreqResponse(object):
-	def storeResps(self, resppath, stream, filelist, streamlen, datetimeUTC):
+	def storeFilters(self, streamID, networkID, channelID):
+		# Check network filter exceptions list and
+		# store filter types for each station
+		if networkID in self.net_filterexc:
+			filtertype = self.net_filterexc[networkID]
+		else:
+			# Assign default channel filter types
+			if channelID == "EHZ":
+				filtertype = self.EHZfiltertype
+			elif channelID == "BHZ":
+				filtertype = self.BHZfiltertype
+			elif channelID == "LHZ":
+				filtertype = self.LHZfiltertype
+			elif channelID == "VHZ":
+				filtertype = self.VHZfiltertype
+		
+		# Assign filter coefficients according to channel/filtertype
+		filterstats = {}	
+		if channelID == "EHZ":
+			if filtertype == "highpass":
+				hpfreq = self.EHZhpfreq
+				filterstats = {'streamID': streamID,
+					'filtertype': filtertype,
+					'freqX': hpfreq, 'freqY': ''}
+				return filterstats
+		elif channelID == "BHZ":
+			if filtertype == "bandpass":
+				bplower = self.BHZbplowerfreq
+				bpupper = self.BHZbpupperfreq
+				filterstats = {'streamID': streamID,
+					'filtertype': filtertype,
+					'freqX': bplower, 'freqY': bpupper}
+				return filterstats
+			elif filtertype == "bandstop":
+				notchlower = self.BHZnotchlowerfreq
+				notchupper = self.BHZnotchupperfreq
+				filterstats = {'streamID': streamID,
+					'filtertype': filtertype,
+					'freqX': notchlower, 'freqY': notchupper}
+				return filterstats
+		elif channelID == "LHZ":
+			if filtertype == "bandpass":
+				bplower = self.LHZbplowerfreq
+				bpupper = self.LHZbpupperfreq
+				filterstats = {'streamID': streamID,
+					'filtertype': filtertype,
+					'freqX': bplower, 'freqY': bpupper}
+				return filterstats
+			elif filtertype == "bandstop":
+				notchlower = self.LHZnotchlowerfreq
+				notchupper = self.LHZnotchupperfreq
+				filterstats = {'streamID': streamID,
+					'filtertype': filtertype,
+					'freqX': notchlower, 'freqY': notchupper}
+				return filterstats
+		elif channelID == "VHZ":
+			if filtertype == "lowpass":
+				lpfreq = self.VHZlpfreq
+				filterstats = {'streamID': streamID,
+					'filtertype': filtertype,
+					'freqX': lpfreq, 'freqY': ''}
+				return filterstats
+	
+	def storeResps(self, resppath, stream, filelist, streamlen, datetimeUTC,
+			EHZfiltertype, EHZhpfreq,
+			BHZfiltertype, BHZbplowerfreq, BHZbpupperfreq,
+			BHZnotchlowerfreq, BHZnotchupperfreq,
+			LHZfiltertype, LHZbplowerfreq, LHZbpupperfreq,
+			LHZnotchlowerfreq, LHZnotchupperfreq,
+			VHZfiltertype, VHZlpfreq,
+			net_filterexc):
 		print "-------freqResponse() Start-------\n"	
+		
+		# Initialize self variables
+		self.EHZfiltertype = EHZfiltertype
+		self.EHZhpfreq = EHZhpfreq
+		self.BHZfiltertype = BHZfiltertype
+		self.BHZbplowerfreq = BHZbplowerfreq
+		self.BHZbpupperfreq = BHZbpupperfreq
+		self.BHZnotchlowerfreq = BHZnotchlowerfreq
+		self.BHZnotchupperfreq = BHZnotchupperfreq
+		self.LHZfiltertype = LHZfiltertype
+		self.LHZbplowerfreq = LHZbplowerfreq
+		self.LHZbpupperfreq = LHZbpupperfreq
+		self.LHZnotchlowerfreq = LHZnotchlowerfreq
+		self.LHZnotchupperfreq = LHZnotchupperfreq
+		self.VHZfiltertype = VHZfiltertype
+		self.VHZlpfreq = VHZlpfreq
+		self.net_filterexc = net_filterexc
+	
+		# Initialize station ID values
 		os.chdir(resppath)
 		networkID = []
 		stationID = []
@@ -35,6 +124,8 @@ class FreqResponse(object):
 			print "Get/set station responses..."	
 			stationName = []	# station names for output plots
 			self.resp = []		# station freq responses for deconvolution
+			self.filtertype = []	# station filter list
+
 			print "streamlen = %d\n" % streamlen
 		
 			# Loop through stations and get responses (if no resp, rm station)
@@ -51,10 +142,10 @@ class FreqResponse(object):
 
 				if not os.path.isfile(resfilename):
 					# if no response remove station from stream list
-					statid = stream[i][0].getId()
+					streamID = stream[i][0].getId()
 					print "------------------------------------------"	
 					print "No response: %s" % resfilename
-					print "Removing stream[%d]: %s" % (i,statid)
+					print "Removing stream[%d]: %s" % (i,streamID)
 					stream.pop(i)
 					networkID.pop(i)
 					stationID.pop(i)
@@ -69,6 +160,9 @@ class FreqResponse(object):
 					resp = {'filename': resfilename, 'date': datetimeUTC,
 						'units': 'VEL'}	# freq response of data (vel)
 					self.resp.append(resp)
+					streamID = stream[i][0].getId() 	
+					filterstats = self.storeFilters(streamID, networkID[i], channelID[i])
+					self.filtertype.append(filterstats)	
 					i = i + 1
 		
 			self.networkID = networkID

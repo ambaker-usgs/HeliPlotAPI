@@ -58,7 +58,6 @@ class PullTraces(object):
 			except Exception as e:
 				print "Exception pullTraces() (read(MSEED)): " + str(e)
 				sys.exit(0)
-				print "Method analyzeRemove() is terminated!"
 			i = i - 1
 
 		# Check for masked arrays and 0 fill to create np.ndarray types
