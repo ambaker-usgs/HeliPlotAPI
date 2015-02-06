@@ -34,9 +34,12 @@ class run_heli_24hr(object):
 						self.nodata = str(newline[1].strip())
 					elif "helihtml" in newline[0]:
 						self.helihtml = str(newline[1].strip())
+					elif "sitespath" in newline[0]:
+						self.sitespath = str(newline[1].strip())
 
 		print "\nOutput plots path: " + str(self.plotspath)
 		print "Heli html path: " + str(self.helihtml)
+		print "Heli sites path: " + str(self.sitespath)
 
 		# --------------------------------------------	
 		# Open and read list of stations/locations
@@ -138,7 +141,7 @@ class run_heli_24hr(object):
 				html.write("\t\t<CENTER><img src=" + '"' + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
 			else:
 				#html.write("\t\t<CENTER><img src=" + '"' + self.plotspath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
-				html.write("\t\t<CENTER><img src=" + '"' + self.plotspath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")	
+				html.write("\t\t<CENTER><img src=" + '"' + self.sitespath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")	
 			html.write("\t\t<p align=" + '"' + align + '"' + ">\n")
 			html.write("\t</body>\n")
 			html.write("</html>")
