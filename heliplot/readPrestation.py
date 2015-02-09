@@ -136,6 +136,7 @@ class ReadPrestation(object):
 		cfgout.write(self.plotspath + "\t" + self.plotspathcmt + "\n")
 		cfgout.write(self.thumbpath + "\t" + self.thumbpathcmt + "\n")	
 		cfgout.write(self.helihtmlpath + "\t" + self.helihtmlpathcmt + "\n")	
+		#cfgout.write(self.sitespath + "\t" + self.sitespathcmt + "\n");	
 		cfgout.write(self.cwbquery + "\t" + self.cwbquerycmt + "\n")
 		cfgout.write(self.resppath + "\t" + self.resppathcmt + "\n\n")
 
@@ -238,7 +239,9 @@ class ReadPrestation(object):
 						self.thumbpath = newline[1].strip()
 					elif "helihtmlpath" in newline[0]:
 						self.helihtmlpath = newline[1].strip()
-					
+					#elif "sitespath" in newline[0]:
+					#	self.sitespath = newline[1].strip()
+
 					# Filter Designs
 					# ---------------------------
 					elif "EHZfiltertype" in newline[0]:
@@ -340,6 +343,7 @@ class ReadPrestation(object):
 		self.plotspathcmt = "# temporary plots path"
 		self.thumbpathcmt = "# temporary thumbnails path"
 		self.helihtmlpathcmt = "# temporary heli html path"
+		#self.sitespathcmt = "# temporary sites path"	
 		self.cwbquerycmt = "# cwbquery jar file"
 		self.resppathcmt = "# responses path"
 	

@@ -88,6 +88,10 @@ class ParseConfig(object):
 		time2str = time2.strftime("%Y%m%d_%H:00:00")
 		time3 = time2 + timedelta(days=1)
 		time3str = time3.strftime("%Y%m%d_%H:00:00")
+		
+		utcstart = time2.strftime("%Y%m%d_%H:%M:00")	# UTC start for obspy query
+		utcend = time3.strftime("%Y%m%d_%H:%M:00")	# UTC end for obspy query
+		
 		self.datetimePlotstart = UTCDateTime(time2str)
 		self.datetimePlotend = UTCDateTime(time3str)
 		print "datetimePlotstart:	%s" % str(self.datetimePlotstart)
@@ -107,9 +111,14 @@ class ParseConfig(object):
 		tmpUTC = datetimeQuery
 		tmpUTC = tmpUTC.replace("/", "")
 		tmpUTC = tmpUTC.replace(" ", "_")
+		
 		self.datetimeUTC = UTCDateTime(str(tmpUTC))
-		print "datetimeUTC:		%s" % str(self.datetimeUTC) + "\n"
-			
+		self.UTCStart = UTCDateTime(utcstart)
+		self.UTCEnd = UTCDateTime(utcend)
+		print "datetimeUTC:		%s" % str(self.datetimeUTC) 
+		print "UTCStart:		%s" % str(self.UTCStart)
+		print "UTCEnd:			%s" % str(self.UTCEnd) + "\n"
+
 	# Read in main station config file (station.cfg)
 	def __init__(self, **kwargs):
 		#os.chdir('/home/asluser/HeliPlotAPI')

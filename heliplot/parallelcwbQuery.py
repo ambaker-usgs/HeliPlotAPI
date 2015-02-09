@@ -37,6 +37,10 @@ class ParallelCwbQuery(object):
 			try:
 				# may want to implement a logger to track system
 				# pid hangs and program exceptions
+				#print ("java -jar " + self.cwbquery + " -s " + '"'+station+'"' +
+				#	" -b " + '"'+self.datetimeQuery+'"' + " -d " + 
+				#	'"'+str(self.duration)+'"' + " -t dcc512 -o " + self.seedpath+"%N_%y_%j -h " +
+				#	'"'+self.ipaddress+'"')
 				subproc = subprocess.Popen([("java -jar " + self.cwbquery +
 					" -s " + '"'+station+'"' + " -b " + '"'+self.datetimeQuery+
 					'"' + " -d " + '"'+str(self.duration)+'"' +

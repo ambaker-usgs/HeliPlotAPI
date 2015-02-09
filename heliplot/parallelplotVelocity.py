@@ -13,6 +13,8 @@
 import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt	# will use title, figure, savefig methods
+from obspy.core.utcdatetime import UTCDateTime
+from datetime import datetime, timedelta
 import matplotlib.image as img
 
 import multiprocessing
@@ -37,7 +39,6 @@ class ParallelPlotVelocity(object):
 		# Plots filtered/magnified streams	
 		# --------------------------------	
 		try:
-			print "Plotting velocity data for station: " + str(stationName)
 			streamID = stream[0].getId()	
 			magnification = self.magnification[streamID] # magnification for station[i]
 			trspacing = self.vertrange/magnification * 1000.0	# trace spacing
@@ -63,14 +64,48 @@ class ParallelPlotVelocity(object):
 			titlestartTime = titlestartTime + " UTC"
 			plotstart = self.datetimePlotstart	
 			plotend = self.datetimePlotend	
-			
-			# Trim stream to starttime of plot
-			# Round up to the nearest sample, this will take care
-			# of sample drift for non-Q330 signals
-			oldtime = stream[0].stats.starttime	
-			stream.trim(starttime=plotstart, nearest_sample=False)
-			newtime = stream[0].stats.starttime	
-			print stream 
+		
+			# Need to check for streams that have a start time greater
+			# than the query time, then trim based on the nearest hour
+			streamstart = stream[0].stats.starttime.datetime
+			streamstart = streamstart.strftime("%Y%m%d_%H:%M:00")
+			streamstart = UTCDateTime(streamstart)	
+			if (streamstart.datetime <= plotstart.datetime):
+				# Trim stream to starttime of plot
+				# Round up to the nearest sample, this will take care
+				# of sample drift for non-Q330 signals
+				stream.trim(starttime=plotstart, endtime=plotend, nearest_sample=True)	# selects sample nearest trim time 
+				print "Plotting "+stationName+" [Trimmed times: start = " + str(stream[0].stats.starttime.datetime) + ", end = " + str(stream[0].stats.endtime.datetime)+"]"
+			elif (streamstart.datetime > plotstart.datetime):
+				# Trim stream to nearest hour when
+				# the plot start time is less than 
+				# the stream start time 
+				tmp = re.split(' ', str(streamstart.datetime))	
+				date = tmp[0]
+				time = tmp[1]
+				tmpdate = re.split('-', str(date))	
+				tmptime = re.split(':', str(time))
+				year = int(tmpdate[0])	# stream stats (date/time) 
+				month = int(tmpdate[1])
+				day = int(tmpdate[2])
+				hour = int(tmptime[0]) 
+				minute = 0	# 00 to account for shift
+				second = int(tmptime[2])
+				currtime = datetime(year, month, day, hour, minute, second, 0)
+				if int(hour) != 23:	
+					# increase trim time to next hour if h != 23 	
+					trimtime = currtime + timedelta(hours=1)	
+					trimtime = UTCDateTime(trimtime)	
+				else:	
+					# trim to next day if h = 23 	
+					hour = 0	# set time to 00:00:00 
+					minute = 0
+					second = 0
+					trimtime = datetime(year, month, day, hour, minute, second, 0) + timedelta(days=1)
+					trimtime = UTCDateTime(trimtime)	
+				stream.trim(starttime=trimtime, endtime=plotend, nearest_sample=True)	# selects sample nearest trim time	
+				print "Plotting "+stationName+" [Trimmed times: start = " + str(stream[0].stats.starttime.datetime) + ", end = " + str(stream[0].stats.endtime.datetime)+"]"	
+	
 			stream.plot(startime=plotstart,
 				endtime=plotend,
 				type='dayplot', interval=60,
@@ -87,26 +122,30 @@ class ParallelPlotVelocity(object):
 				(str(filtertype), str(bounds), trspacing), fontsize=10)
 			plt.ylabel('Time [h]', fontsize=10)
 			locs, labels = plt.yticks()	# pull current locs/labels
-			hours = [0 for i in range(len(labels))]
-			for i in range(len(labels)):	# extract hours from labels
-				tmptime = re.split(':', labels[i].get_text())
-				hours[i] = int(tmptime[0])
-			posilist = [i+0.5 for i in range(24)]	# create tick position list
-			posilist = posilist[::-1]		# reverse list
-			timelist = [0 for i in range(24)]	# timelist for tick hours
-			timelen = len(timelist)
-			starthr = hours[0]	# start hour
-			if starthr <= 23:
-				startlen = 23 - starthr + 1	# hours are from 0-23
-			else:
-				startlen = 0	
-			startlist = range(starthr, starthr+startlen)	# start of list 0-23
-			startlen = len(startlist)
-			timelist[0:startlen] = startlist	# end of start should be 23
-			timelist[startlen:timelen] = range(0, timelen-startlen)	# 0 to end time
-			for i in range(len(timelist)):
-				timelist[i] = str(timelist[i]) + ":00"
-			plt.yticks(posilist, timelist, fontsize=9)	# times in position
+
+			# If missing data, fill in beginning hours	
+			hours = [0 for i in range(24)]	# 24 hours
+			if len(labels) < len(hours):
+				tmptime = re.split(':', labels[0].get_text())
+				starthour = int(tmptime[0])
+				lastindex = len(hours) - len(labels)	
+				i = len(hours) - len(labels) 
+				while (i > 0):
+					hours[lastindex-i] = str(starthour-i)+":00"
+					i = i - 1	
+				i = 0	
+				for i in range(len(labels)):
+					tmptime = re.split(':', labels[i].get_text())
+					hours[i+lastindex] = str(tmptime[0])+":00"
+			elif len(labels) == len(hours):
+				for i in range(len(labels)):	# extract hours from labels
+					tmptime = re.split(':', labels[i].get_text())
+					hours[i] = str(tmptime[0])+":00"
+			
+			# Create tick position list
+			position = [i+0.5 for i in range(24)]	
+			position = position[::-1]		# reverse list
+			plt.yticks(position, hours, fontsize=9)	# times in position
 			#dpi=self.pix, size=(self.resx,self.resy))
 			plt.savefig(stationName+"."+self.imgformat)
 			plt.close(dpl)	
