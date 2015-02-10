@@ -140,7 +140,7 @@ class run_heli_24hr(object):
 			if NODATAFLG:
 				html.write("\t\t<CENTER><img src=" + '"' + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
 			else:
-				#html.write("\t\t<CENTER><img src=" + '"' + self.plotspath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
+				#html.write("\t\t<CENTER><img src=" + '"' + self.sitespath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")
 				html.write("\t\t<CENTER><img src=" + '"' + self.plotspath + image + '"' + " width=" + '"' + width + '"' + " height=" + '"' + height + '"' + "></CENTER>\n")	
 			html.write("\t\t<p align=" + '"' + align + '"' + ">\n")
 			html.write("\t</body>\n")
