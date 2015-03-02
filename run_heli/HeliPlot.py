@@ -54,6 +54,10 @@ if __name__ == '__main__':
 	t1 = time.time()	
 	pars.setStationData()
 	'''	
+	timeargs = {'year': 2015, 'month': 3, 'day': 2, 'hour': 13,
+			'minute': 31, 'second': 58, 'microsecond': 0}
+	timeargs = {'year': 2015, 'month': 2, 'day': 18, 'hour': 17,
+			'minute': 31, 'second': 58, 'microsecond': 0}
 	timeargs = {'year': 2015, 'month': 2, 'day': 5, 'hour': 16,
 			'minute': 37, 'second': 0, 'microsecond': 0}
 	timeargs = {'year': 2015, 'month': 2, 'day': 6, 'hour': 22,
