@@ -22,15 +22,15 @@ chomp $datenow;
 print "$progname $version starting at $datenow\n\n";
 
 # extra debug info for hangs
-print "===============================\n";
-$cmd = "ps -fu agonzales | grep -i 'heli\|python'";
-my @lines = `$cmd`;
-chomp @lines;
-print "Active Python/Heli processes for agonzales\n";
-for (my $i = 0; $i < @lines; $i++) {
-	print "\t$lines[$i]\n";
-}
-print "===============================\n";
+#print "===============================\n";
+#$cmd = "ps -fu agonzales | grep -i 'heli\|python'";
+#my @lines = `$cmd`;
+#chomp @lines;
+#print "Active Python/Heli processes for agonzales\n";
+#for (my $i = 0; $i < @lines; $i++) {
+#	print "\t$lines[$i]\n";
+#}
+#print "===============================\n";
 
 
 # make new heliplots 
