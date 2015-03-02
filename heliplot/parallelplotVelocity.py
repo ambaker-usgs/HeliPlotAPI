@@ -64,8 +64,8 @@ class ParallelPlotVelocity(object):
 			titlestartTime = titlestartTime + " UTC"
 			plotstart = self.datetimePlotstart	
 			plotend = self.datetimePlotend	
-			startday = plotstart.day	
-			starthour = plotstart.hour
+			plotday = plotstart.day
+			plothour = plotstart.hour
 
 			# Need to check for streams that have a start time greater
 			# than the query time, then trim based on the nearest hour
@@ -73,6 +73,8 @@ class ParallelPlotVelocity(object):
 			streamstart = streamstart.strftime("%Y%m%d_%H:%M:00")
 			streamstart = UTCDateTime(streamstart)	
 			if (streamstart.datetime <= plotstart.datetime):
+				#print streamID + ": " + str(streamstart.datetime) + " < " + str(plotstart.datetime) + "\n"	
+				
 				# Trim stream to starttime of plot
 				# Round up to the nearest sample, this will take care
 				# of sample drift for non-Q330 signals
@@ -80,15 +82,16 @@ class ParallelPlotVelocity(object):
 			
 				# Check trimmed hour and round if != plotstart hour
 				trimmedhour = stream[0].stats.starttime.hour
-				if (trimmedhour != starthour):
-					stream[0].stats.starttime.day = startday	
-					stream[0].stats.starttime.hour = starthour
+				if (trimmedhour != plothour):
+					stream[0].stats.starttime.day = plotday 
+					stream[0].stats.starttime.hour = plothour 
 					stream[0].stats.starttime.minute = 0
 					stream[0].stats.starttime.second = 0
 					stream[0].stats.starttime.microsecond = 0
-				print "Plotting: " + str(stream)
 			
 			elif (streamstart.datetime > plotstart.datetime):
+				#print streamID + ": " + str(streamstart.datetime) + " > " + str(plotstart.datetime) + "\n"	
+				
 				# Trim stream to nearest hour when
 				# the plot start time is less than 
 				# the stream start time 
@@ -121,8 +124,8 @@ class ParallelPlotVelocity(object):
 					stream[0].stats.starttime.minute = 0
 					stream[0].stats.starttime.second = 0
 					stream[0].stats.starttime.microsecond = 0
-				print "Plotting: " + str(stream)
-	
+			
+			print "Plotting: " + str(stream)
 			stream.plot(startime=plotstart,
 				endtime=plotend,
 				type='dayplot', interval=60,
@@ -140,29 +143,49 @@ class ParallelPlotVelocity(object):
 			plt.ylabel('Time [h]', fontsize=10)
 			locs, labels = plt.yticks()	# pull current locs/labels
 
-			# Create list of hours (if missing data, fill in beginning hours)	
 			hours = [0 for i in range(24)]	# 24 hours
+			# Create list of hours (if missing data, fill in beginning hours)	
 			if len(labels) < len(hours):
 				tmptime = re.split(':', labels[0].get_text())
 				starthour = int(tmptime[0])
-				startmin = int(tmptime[1])	
+				hour = 0	# fill in hour	
 				lastindex = len(hours) - len(labels)	
-				i = len(hours) - len(labels) 
-				while (i > 0):	# fill beginning hours
-					hours[lastindex-i] = str(starthour-i)+":00"
-					i = i - 1	
-				i = 0	
-				for i in range(len(labels)):	# fill remaining hours
-					tmptime = re.split(':', labels[i].get_text())
-					hour = int(tmptime[0])
-					hours[i+lastindex] = str(hour)+":00"
-
+				i = lastindex 
+				
+				# Stream start hour can be < or > than the plot
+				# start hour (if > then subtract, else start from
+				# plot hour and add) 
+				# **NOTE: This fixes negative indexing
+				if (plothour < starthour):	
+					while (i > 0):	# fill beginning hours
+						hour = starthour - i		
+						hours[lastindex-i] = str(hour)+":00"
+						i = i - 1	
+					i = 0	
+					for i in range(len(labels)):	# fill remaining hours
+						tmptime = re.split(':', labels[i].get_text())
+						hour = int(tmptime[0])
+						hours[i+lastindex] = str(hour)+":00"
+				else:	# plothour > starthour
+					while (i > 0):
+						if (i > starthour):	
+							hour = plothour + (lastindex-i)		
+							hours[lastindex-i] = str(hour) +":00"
+						elif (i <= starthour):	# start at 0
+							hour = starthour - i
+							hours[lastindex-i] = str(hour)+":00"	
+						i = i - 1
+					i = 0
+					for i in range(len(labels)):	# fill remaining hours
+						tmptime = re.split(':', labels[i].get_text())
+						hour = int(tmptime[0])
+						hours[i+lastindex] = str(hour)+":00"
 			elif len(labels) == len(hours):
 				for i in range(len(labels)):	# extract hours from labels
 					tmptime = re.split(':', labels[i].get_text())
 					hour = int(tmptime[0])
 					hours[i] = str(hour)+":00"
-
+			
 			# Create tick position list
 			position = [i+0.5 for i in range(24)]	
 			position = position[::-1]		# reverse list
@@ -170,7 +193,6 @@ class ParallelPlotVelocity(object):
 			#dpi=self.pix, size=(self.resx,self.resy))
 			plt.savefig(stationName+"."+self.imgformat)
 			plt.close(dpl)	
-			print	
 		except KeyboardInterrupt:
 			print "KeyboardInterrupt plotVelocity(): terminate workers..."
 			raise KeyboardInterruptError()
@@ -216,7 +238,7 @@ class ParallelPlotVelocity(object):
 				streams, stationName, filters))	# thread plots
 			pool.close()
 			pool.join()
-			print "------plotVelocity() Pool Complete------\n\n"
+			print "\n------plotVelocity() Pool Complete------\n\n"
 		except KeyboardInterrupt:
 			print "KeyboardInterrupt parallelplotVelocity(): terminating pool..."
 			# find/kill all child processes
