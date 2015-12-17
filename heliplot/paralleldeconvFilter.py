@@ -155,8 +155,11 @@ class ParallelDeconvFilter(object):
 		# method 1 => fill overlaps using interpolation for
 		# values between both vectors for x num of samples
 		for i in range(streamlen):
-			stream[i].merge(method=1, fill_value='interpolate',
-				interpolation_samples=100)
+			try:
+				stream[i].merge(method=1, fill_value='interpolate',
+					interpolation_samples=100)
+			except Exception, e:
+				print 'Error merging traces:', e
 
 		# Deconvolution/Prefilter
 		# Initialize multiprocessing pools
