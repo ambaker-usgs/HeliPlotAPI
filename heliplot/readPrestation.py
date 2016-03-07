@@ -85,6 +85,10 @@ class ReadPrestation(object):
 				tmpstation = self.stations[i] + " " + channelID + locationID +\
 						"\t" + self.locations[i]
 				self.stationlist.append(tmpstation)
+			elif stringlen == 7:
+				tmpstation = self.stations[i] + " " + channelID + locationID +\
+						"\t" + self.locations[i]
+				self.stationlist.append(tmpstation)
 			else:
 				self.skipstations.append(self.stations[i])
 	

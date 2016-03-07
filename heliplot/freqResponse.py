@@ -114,7 +114,7 @@ class FreqResponse(object):
 			tmpstation = filelist[i]
 			stationindex = tmpstation.index('_')
 			networkID.append(str(tmpstation[0:2]))
-			stationID.append(str(tmpstation[2:stationindex]))
+			stationID.append(stream[i][0].stats.station)
 			locationindex = len(tmpstation)-11
 			channelindex = len(tmpstation)-14
 			locationID.append(str(tmpstation[locationindex:locationindex+2]))
