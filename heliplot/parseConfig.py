@@ -127,7 +127,7 @@ class ParseConfig(object):
 		self.data = {}
 		self.data['station'] = []	# list for multiple stations
 		STFLAG = False
-		fin = open('station.cfg', 'r')
+		fin = open('run_heli/station.cfg', 'r')
 		for line in fin:
 			if line[0] == '#':
 				if line != '\n':

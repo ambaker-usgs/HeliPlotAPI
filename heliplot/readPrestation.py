@@ -24,14 +24,14 @@ class ReadPrestation(object):
 		# Open and read list of stations
 		# ---------------------------------
 		#os.chdir('/home/asluser/HeliPlotAPI/')	
-		home = os.getcwd()	
+		home = os.getcwd()
 		os.chdir(home)	
 		self.networks = []	# list of networks	
 		self.stations = []	# list of stations
 		self.stationlist = []	# list for edited station names
 		self.locations = []	# list of locations for each station
 		self.skipstations = []	# list of network/stations with len > 6
-		fin = open('stationNames.txt', 'r')
+		fin = open('run_heli/stationNames.txt', 'r')
 		for line in fin:
 			count = 0
 			line = line.strip()
@@ -97,7 +97,7 @@ class ReadPrestation(object):
 		# Server variables can change
 		# ---------------------------
 		print "\nwriteDefaultVariables()"	
-		self.cfgout = open('station.cfg', 'w')	# closed in writeStations()
+		self.cfgout = open('run_heli/station.cfg', 'w')	# closed in writeStations()
 		cfgout = self.cfgout
 		cfgout.write(self.cfgcmt)
 		cfgout.write("\n")
@@ -191,7 +191,7 @@ class ReadPrestation(object):
 		# Read in data from prestation.cfg, this file
 		# contains channel/location, datetime/duration, etc.
 		# ---------------------------------------------
-		fin = open('prestation.cfg', 'r')
+		fin = open('run_heli/prestation.cfg', 'r')
 		for line in fin:
 			if (line[0] != '#'):
 				if line != '\n':
