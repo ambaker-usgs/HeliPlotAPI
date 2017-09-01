@@ -1,0 +1,46 @@
+[
+  {
+    "name": "HeliPlotAPI",
+    "organization": "U.S. Geological Survey",
+    "description": "Seismic waveforms to visualize ground motion",
+    "version": "1.5.8",
+    "status": "production",
+
+    "permissions": {
+      "usageType": "openSource",
+      "licenses": [
+        {
+          "name": "Public Domain, CC0-1.0",
+          "URL": "https://github.com/usgs/HeliPlotAPI/blob/master/LICENSE.md"
+        }
+      ]
+    },
+
+    "homepageURL": "https://usgs.github.io/HeliPlotAPI/",
+    "downloadURL": "https://github.com/usgs/HeliPlotAPI/archive/master.zip",
+    "disclaimerURL": "https://github.com/usgs/HeliPlotAPI/blob/master/LICENSE.md",
+    "repositoryUrl": "https://github.com/usgs/HeliPlotAPI.git",
+    "vcs": "git",
+
+    "laborHours": null,
+
+    "tags": [
+      "heliplot",
+      "waveforms"
+    ],
+
+    "languages": [
+      "Python",
+      "Perl"
+    ],
+
+    "contact": {
+      "name": "Adam Baker",
+      "email": "ambaker@usgs.gov"
+    },
+
+    "date": {
+      "metadataLastUpdated": "2017-09-01"
+    }
+  }
+]
